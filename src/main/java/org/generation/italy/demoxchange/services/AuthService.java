@@ -100,7 +100,7 @@ public class AuthService {
         try {
             return UserRole.valueOf(role);
         } catch (IllegalArgumentException ex) {
-            throw new BadRequestException("invalid_role", "Role must be STUDENT, TEACHER, or HEAD");
+            throw new BadRequestException("invalid_role", "Role must be GUEST, USER, or ADMIN");
         }
     }
 }

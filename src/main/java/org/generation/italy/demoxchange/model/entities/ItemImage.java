@@ -27,6 +27,11 @@ public class ItemImage {
 
     public ItemImage() {}
 
+    @PrePersist
+    void onCreate() {
+        createdAt = OffsetDateTime.now();
+    }
+
     public ItemImage(Item item, String url, short displayOrder) {
         this.item = item;
         this.url = url;

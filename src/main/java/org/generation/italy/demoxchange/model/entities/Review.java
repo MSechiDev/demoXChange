@@ -35,6 +35,11 @@ public class Review {
 
     public Review() {}
 
+    @PrePersist
+    void onCreate() {
+        createdAt = OffsetDateTime.now();
+    }
+
     public Review(Exchange exchange, AppUser author, AppUser recipient, short rating) {
         this.exchange = exchange;
         this.author = author;

@@ -50,6 +50,11 @@ public class Report {
 
     public Report() {}
 
+    @PrePersist
+    void onCreate() {
+        createdAt = OffsetDateTime.now();
+    }
+
     public Report(AppUser reporter, ReportReason reason) {
         this.reporter = reporter;
         this.reason = reason;
