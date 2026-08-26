@@ -33,13 +33,6 @@ public class AppUser {
     @Column(name = "role", nullable = false, length = 20)
     private Set<UserRole> roles = new HashSet<>();
 
-    // optional back references to domain entities
-//    @OneToOne(mappedBy = "appUser")
-//    private Student student;
-
-//    @OneToOne(mappedBy = "appUser")
-//    private Teacher teacher;
-
     public AppUser() {}
 
     public AppUser(String username, String passwordHash, Set<UserRole> roles) {
@@ -85,21 +78,4 @@ public class AppUser {
     public void setRoles(Set<UserRole> roles) {
         this.roles = roles;
     }
-
-    // Domain back refs
-//    public Student getStudent() {
-//        return student;
-//    }
-//
-//    public void setStudent(Student student) {
-//        this.student = student;
-//    }
-//
-//    public Teacher getTeacher() {
-//        return teacher;
-//    }
-//
-//    public void setTeacher(Teacher teacher) {
-//        this.teacher = teacher;
-//    }
 }

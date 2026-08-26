@@ -32,7 +32,7 @@ public class AuthController {
 
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('HEAD')")
+    @PreAuthorize("hasRole('ADMIN')")
     public UserDto createUser(@Valid @RequestBody CreateUserRequest request) {
         return authService.createUser(request);
     }
