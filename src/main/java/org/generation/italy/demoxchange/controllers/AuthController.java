@@ -1,4 +1,4 @@
-package org.generation.italy.demoxchange.model.controllers;
+package org.generation.italy.demoxchange.controllers;
 
 import jakarta.validation.Valid;
 import org.generation.italy.demoxchange.model.dto.CreateUserRequest;
