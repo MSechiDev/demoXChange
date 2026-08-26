@@ -53,6 +53,11 @@ public class Offer {
 
     public Offer() {}
 
+    @PrePersist
+    void onCreate() {
+        createdAt = OffsetDateTime.now();
+    }
+
     public Offer(Listing listing, AppUser offerer, AppUser createdBy) {
         this.listing = listing;
         this.offerer = offerer;

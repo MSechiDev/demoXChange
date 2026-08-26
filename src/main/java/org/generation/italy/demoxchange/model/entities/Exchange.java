@@ -34,6 +34,11 @@ public class Exchange {
 
     public Exchange() {}
 
+    @PrePersist
+    void onCreate() {
+        createdAt = OffsetDateTime.now();
+    }
+
     public Exchange(Offer offer) {
         this.offer = offer;
     }

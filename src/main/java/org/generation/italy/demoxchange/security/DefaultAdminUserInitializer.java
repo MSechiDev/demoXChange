@@ -10,11 +10,11 @@ import org.springframework.stereotype.Component;
 import java.util.Set;
 
 @Component
-public class DefaultHeadUserInitializer implements CommandLineRunner {
+public class DefaultAdminUserInitializer implements CommandLineRunner {
     private final AppUserRepository appUserRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public DefaultHeadUserInitializer(AppUserRepository appUserRepository, PasswordEncoder passwordEncoder) {
+    public DefaultAdminUserInitializer(AppUserRepository appUserRepository, PasswordEncoder passwordEncoder) {
         this.appUserRepository = appUserRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -22,8 +22,8 @@ public class DefaultHeadUserInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
         // Read env vars. Do NOT default the password to an insecure value.
-        String username = System.getenv().getOrDefault("APP_HEAD_USERNAME", "head");
-        String password = System.getenv().get("APP_HEAD_PASSWORD"); // intentionally no default
+        String username = System.getenv().getOrDefault("APP_ADMIN_USERNAME", "admin");
+        String password = System.getenv().get("APP_ADMIN_PASSWORD"); // intentionally no default
 
         if (appUserRepository.existsByUsername(username)) {
             return;
@@ -31,14 +31,14 @@ public class DefaultHeadUserInitializer implements CommandLineRunner {
 
         // If password is not provided or is obviously insecure, skip automatic creation and warn.
         if (password == null || password.isBlank()) {
-            System.err.println("[WARN] APP_HEAD_PASSWORD not set — skipping creation of default HEAD user. " +
-                    "To create a HEAD user at startup set APP_HEAD_USERNAME and APP_HEAD_PASSWORD environment variables.");
+            System.err.println("[WARN] APP_ADMIN_PASSWORD not set — skipping creation of default ADMIN user. " +
+                    "To create an ADMIN user at startup set APP_ADMIN_USERNAME and APP_ADMIN_PASSWORD environment variables.");
             return;
         }
 
-        if ("head".equals(password) || "password".equalsIgnoreCase(password)) {
-            System.err.println("[WARN] APP_HEAD_PASSWORD is insecure (uses a common default) — skipping creation of default HEAD user. " +
-                    "Use a strong random password via APP_HEAD_PASSWORD.");
+        if ("admin".equals(password) || "password".equalsIgnoreCase(password)) {
+            System.err.println("[WARN] APP_ADMIN_PASSWORD is insecure (uses a common default) — skipping creation of default ADMIN user. " +
+                    "Use a strong random password via APP_ADMIN_PASSWORD.");
             return;
         }
 
