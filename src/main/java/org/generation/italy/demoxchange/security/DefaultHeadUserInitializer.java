@@ -46,7 +46,7 @@ public class DefaultHeadUserInitializer implements CommandLineRunner {
         user.setUsername(username);
         user.setPasswordHash(passwordEncoder.encode(password));
         user.setEnabled(true);
-        user.setRoles(Set.of(UserRole.HEAD));
+        user.setRoles(Set.of(UserRole.ADMIN));
         appUserRepository.save(user);
     }
 }
