@@ -32,6 +32,17 @@ public class Category {
 
     public Category() {}
 
+    @PrePersist
+    void onCreate() {
+        createdAt = OffsetDateTime.now();
+        updatedAt = createdAt;
+    }
+
+    @PreUpdate
+    void onUpdate() {
+        updatedAt = OffsetDateTime.now();
+    }
+
     public Category(String name, String slug, String description) {
         this.name = name;
         this.slug = slug;
@@ -80,9 +91,5 @@ public class Category {
 
     public OffsetDateTime getUpdatedAt() {
         return updatedAt;
-    }
-
-    public void setUpdatedAt(OffsetDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }

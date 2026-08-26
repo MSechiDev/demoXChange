@@ -51,6 +51,17 @@ public class Item {
 
     public Item() {}
 
+    @PrePersist
+    void onCreate() {
+        createdAt = OffsetDateTime.now();
+        updatedAt = createdAt;
+    }
+
+    @PreUpdate
+    void onUpdate() {
+        updatedAt = OffsetDateTime.now();
+    }
+
     public Item(AppUser owner, Category category, String title, String description, ItemCondition itemCondition) {
         this.owner = owner;
         this.category = category;
@@ -125,10 +136,6 @@ public class Item {
 
     public OffsetDateTime getUpdatedAt() {
         return updatedAt;
-    }
-
-    public void setUpdatedAt(OffsetDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     public List<ItemImage> getImages() {
