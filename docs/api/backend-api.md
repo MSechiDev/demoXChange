@@ -1,6 +1,6 @@
 # demoXChange Backend API — Frontend Integration Guide
 
-Contract for the parts of the demoXChange backend that are live today: authentication, categories, and reports. Use this to build the frontend against the real behavior of the API — not a history of changes.
+Contract for the parts of the demoXChange backend that are live today: authentication, users, categories, reports, and messaging. Use this to build the frontend against the real behavior of the API — not a history of changes.
 
 Base URL: `http://localhost:8080` (dev). All endpoints are under `/api`.
 
@@ -56,6 +56,25 @@ Everything else falls back to Spring Boot defaults — **do not expect the `erro
 - `401` — missing/invalid/expired JWT.
 - `403` — authenticated but `@PreAuthorize` denied (wrong role, or not the resource owner).
 - `400` on `@Valid` failures (missing/malformed fields) — standard Spring validation error body, not `ApiError`.
+
+## Users — `/api/users`
+
+Just a public profile lookup for now — no self-service editing, no auth-linked "my profile" shortcut (use the `uid` JWT claim and call this by id).
+
+### `GET /api/users/{id}/profile` — any authenticated user
+Response:
+```json
+{
+  "userId": 1,
+  "username": "string",
+  "averageRating": 4.5,
+  "reviewsCount": 2,
+  "reviews": [
+    { "id": 10, "authorId": 3, "authorUsername": "string", "rating": 5, "comment": "string | null", "createdAt": "2026-08-27T10:00:00Z" }
+  ]
+}
+```
+`averageRating` is `null` (not `0`) when `reviewsCount` is `0`. `404 user_not_found` if the id doesn't exist.
 
 ## Categories — `/api/categories`
 
@@ -160,20 +179,53 @@ Request (`ReviewReportRequest`):
 `409 report_already_closed` if the report is already `risolta`/`respinta` — closed reports can't be reviewed again.
 On success: sets `status`, `resolutionNote`, `reviewedBy` (the acting admin), `reviewedAt` (now).
 
+## Messages — `/api/offers/{offerId}/messages` and `/api/messages`
+
+Private chat between the two people in an offer negotiation: the **offerer** and the **listing owner**. There's no free-standing DM — a conversation only exists in the context of an offer. `Offers` themselves have no API yet (that's a teammate's feature), so you can't create the offer that starts a conversation from the frontend yet, but once one exists (e.g. seeded in the DB) messaging on it works end-to-end.
+
+Counter-offers create new `Offer` rows chained by `parentOfferId`, but there is **exactly one message thread per negotiation**: every endpoint below takes an offer id — any offer in the chain, original or counter-offer — and the server resolves it up to the root offer internally. So it doesn't matter which offer id in the negotiation you use, you always land on the same thread.
+
+`MessageDto`:
+```json
+{
+  "id": 1,
+  "offerId": 5,
+  "senderId": 2,
+  "senderUsername": "string",
+  "body": "string",
+  "sentAt": "2026-08-27T10:00:00Z",
+  "readAt": null
+}
+```
+`offerId` is always the **root** offer id of the negotiation (even if you sent the request against a counter-offer's id) — use it as the thread/conversation identifier. There's no `recipientId`: the other participant is whichever of {offerer, listing owner} isn't `senderId`.
+
+### `GET /api/messages/mine` — any authenticated user
+One entry per conversation you're part of (as offerer or listing owner): the most recent message in that thread, newest-conversation-first. Use it to render an inbox/conversation list.
+
+### `GET /api/offers/{offerId}/messages` — offerer or listing owner only
+Full thread, oldest → newest. As a side effect, marks every message from the other participant as read (`readAt` set) — call this when the user opens the conversation. `403` if you're neither participant. `404 offer_not_found` if the offer doesn't exist.
+
+### `POST /api/offers/{offerId}/messages` — offerer or listing owner only
+Request (`SendMessageRequest`):
+```json
+{ "body": "string, not blank, max 2000" }
+```
+Same participant check as the `GET` above. `201` with the created `MessageDto`. This is also how you "reply" — there's no separate reply endpoint, just post again on the same thread.
+
+### `DELETE /api/messages/{id}` — the sender only
+`204 No Content`. **Hard delete** — the message is gone for both participants, not just hidden from your side. `403` if you didn't send it. `404 message_not_found` if it doesn't exist.
+
 ## Not built yet
 
-Only Auth, Categories, and Reports have controllers right now. The rest of the app (per the team's feature list) has entities/repositories mapped but **no service or controller** — don't build UI against these until the owning teammate ships them:
+Auth, Users, Categories, Reports, and Messages have controllers right now. The rest of the app (per the team's feature list) has entities/repositories mapped but **no service or controller** — don't build UI against these until the owning teammate ships them:
 
-- User profile page (avg rating + reviews by user id)
 - Listing publish/status/exchange preferences
 - Search listings by category/price
 - Item CRUD (insert/search/delete)
-- Private messaging
-- Offers on listings (send, accept, counter-offer)
+- Offers on listings (send, accept, counter-offer) — messaging above depends on this existing, so it's next in line
 - Post-exchange reviews
 - Item photo upload/reorder/delete
 - Exchange completion confirmation (both sides)
-- Public user reputation view
 - Admin aggregate view of open reports (a moderation queue/list beyond the single-report `GET /api/reports` above)
 
 If you need one of these to unblock frontend work, check with the teammate who owns it rather than guessing the shape — this doc will get a new section once each one is actually implemented.
