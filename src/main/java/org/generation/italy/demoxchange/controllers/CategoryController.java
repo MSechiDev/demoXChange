@@ -42,4 +42,16 @@ public class CategoryController {
     public CategoryDto update(@PathVariable long id, @Valid @RequestBody UpdateCategoryRequest request) {
         return categoryService.update(id, request);
     }
+
+    @PatchMapping("/{id}/deactivate")
+    @PreAuthorize("hasRole('ADMIN')")
+    public CategoryDto deactivate(@PathVariable long id) {
+        return categoryService.setActive(id, false);
+    }
+
+    @PatchMapping("/{id}/activate")
+    @PreAuthorize("hasRole('ADMIN')")
+    public CategoryDto activate(@PathVariable long id) {
+        return categoryService.setActive(id, true);
+    }
 }
