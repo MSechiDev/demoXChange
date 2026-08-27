@@ -8,13 +8,10 @@ import org.generation.italy.demoxchange.model.entities.ReportStatus;
 import org.generation.italy.demoxchange.services.ReportService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -39,8 +36,9 @@ public class ReportController {
     }
 
     @GetMapping("/{id}")
-    public ReportDto findById(@PathVariable long id, @AuthenticationPrincipal Jwt jwt, Authentication authentication) {
-        return reportService.findById(id, currentUserId(jwt), isAdmin(authentication));
+    @PreAuthorize("hasRole('ADMIN') or @reportService.isReporter(#id, authentication.principal.claims['uid'])")
+    public ReportDto findById(@PathVariable long id) {
+        return reportService.findById(id);
     }
 
     @PostMapping
@@ -57,10 +55,5 @@ public class ReportController {
 
     private static long currentUserId(Jwt jwt) {
         return jwt.getClaim("uid");
-    }
-
-    private static boolean isAdmin(Authentication authentication) {
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        return authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
     }
 }

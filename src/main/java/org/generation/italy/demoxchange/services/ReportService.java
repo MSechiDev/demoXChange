@@ -15,7 +15,6 @@ import org.generation.italy.demoxchange.model.repositories.AppUserRepository;
 import org.generation.italy.demoxchange.model.repositories.ListingRepository;
 import org.generation.italy.demoxchange.model.repositories.ReportRepository;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,12 +53,13 @@ public class ReportService {
     }
 
     @Transactional(readOnly = true)
-    public ReportDto findById(long id, long currentUserId, boolean isAdmin) {
-        Report report = getOrThrow(id);
-        if (!isAdmin && report.getReporter().getId() != currentUserId) {
-            throw new AccessDeniedException("Only the reporter or an admin can view this report");
-        }
-        return toDto(report);
+    public ReportDto findById(long id) {
+        return toDto(getOrThrow(id));
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isReporter(long id, long userId) {
+        return reportRepository.existsByIdAndReporterId(id, userId);
     }
 
     @Transactional

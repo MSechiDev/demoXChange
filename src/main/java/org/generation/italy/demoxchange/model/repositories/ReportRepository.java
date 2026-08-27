@@ -13,4 +13,5 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
     List<Report> findByStatus(ReportStatus status, Sort sort);
     boolean existsByReporterIdAndReportedUserIdAndStatusIn(Long reporterId, Long reportedUserId, Collection<ReportStatus> statuses);
     boolean existsByReporterIdAndReportedListingIdAndStatusIn(Long reporterId, Long reportedListingId, Collection<ReportStatus> statuses);
+    boolean existsByIdAndReporterId(Long id, Long reporterId);
 }
