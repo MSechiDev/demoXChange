@@ -67,6 +67,14 @@ public class CategoryService {
         return toDto(flushed);
     }
 
+    @Transactional
+    public CategoryDto setActive(long id, boolean active) {
+        Category category = getOrThrow(id);
+        category.setActive(active);
+        Category flushed = categoryRepository.saveAndFlush(category);
+        return toDto(flushed);
+    }
+
     private Category getOrThrow(long id) {
         return categoryRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("category_not_found", "Category not found: " + id));
