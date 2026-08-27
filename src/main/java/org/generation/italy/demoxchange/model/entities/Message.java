@@ -31,6 +31,11 @@ public class Message {
 
     public Message() {}
 
+    @PrePersist
+    void onCreate() {
+        sentAt = OffsetDateTime.now();
+    }
+
     public Message(Exchange exchange, AppUser sender, String body) {
         this.exchange = exchange;
         this.sender = sender;

@@ -41,6 +41,17 @@ public class Listing {
 
     public Listing() {}
 
+    @PrePersist
+    void onCreate() {
+        publishedAt = OffsetDateTime.now();
+        updatedAt = publishedAt;
+    }
+
+    @PreUpdate
+    void onUpdate() {
+        updatedAt = OffsetDateTime.now();
+    }
+
     public Listing(Item item, String city) {
         this.item = item;
         this.city = city;
@@ -80,10 +91,6 @@ public class Listing {
 
     public OffsetDateTime getUpdatedAt() {
         return updatedAt;
-    }
-
-    public void setUpdatedAt(OffsetDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     public Set<Category> getAcceptedCategories() {
