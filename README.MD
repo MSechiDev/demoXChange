@@ -32,9 +32,4 @@ FEATURES APPLICAZIONE DA DIVIDERE:
 
 11) Gestione foto degli oggetti (upload, ordinamento e cancellazione delle immagini di un item)
 
-12) Conferma di completamento scambio (entrambe le parti confermano l'avvenuta consegna,
-    lo scambio passa a "completato")
 
-13) Vista reputazione pubblica dell'utente (media voto, numero recensioni, voto minimo/massimo)
-
-14) Vista aggregata per l'admin delle segnalazioni aperte (coda di moderazione)
