@@ -13,8 +13,8 @@ public class Message {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "exchange_id", nullable = false)
-    private Exchange exchange;
+    @JoinColumn(name = "offer_id", nullable = false)
+    private Offer offer;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "sender_id", nullable = false)
@@ -36,8 +36,8 @@ public class Message {
         sentAt = OffsetDateTime.now();
     }
 
-    public Message(Exchange exchange, AppUser sender, String body) {
-        this.exchange = exchange;
+    public Message(Offer offer, AppUser sender, String body) {
+        this.offer = offer;
         this.sender = sender;
         this.body = body;
     }
@@ -46,12 +46,12 @@ public class Message {
         return id;
     }
 
-    public Exchange getExchange() {
-        return exchange;
+    public Offer getOffer() {
+        return offer;
     }
 
-    public void setExchange(Exchange exchange) {
-        this.exchange = exchange;
+    public void setOffer(Offer offer) {
+        this.offer = offer;
     }
 
     public AppUser getSender() {
