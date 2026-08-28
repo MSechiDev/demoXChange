@@ -6,16 +6,16 @@ FEATURES APPLICAZIONE DA DIVIDERE:
 
 1) FATTO<><><><><> Registrazione e sicurezza
 
-2) Konrad -> creazione profilo utente (fra i dati dell'utente apparirà la media delle reviews
+2) FATTO<><><><><> creazione profilo utente (fra i dati dell'utente apparirà la media delle reviews
    e la lista completa di tutte le sue reviews), richiedere i dati del profilo utente per ID
 
 3) Giuseppe -> pubblicazione annunci + stato annuncio + preferenze
 
 4) Francesco -> ricerca degli annunci per categoria e range di prezzo
 
-5) Mattia -> Inserimento oggetti, ricercarli, cancellarli
+5) FATTO<><><><><> Inserimento oggetti, ricercarli, cancellarli
 
-6) Manuel -> Messaggistica privata tra clienti (inviare messaggio ad utente, vedere tutti i propri
+6) FATTO<><><><><> Messaggistica privata tra clienti (inviare messaggio ad utente, vedere tutti i propri
    messaggi opzionalmente solo quelli non letti, rispondere al messaggio, cancellare messaggio)
 
 7) FATTO<><><><><> Admin: creare, modificare, disattivare categorie
