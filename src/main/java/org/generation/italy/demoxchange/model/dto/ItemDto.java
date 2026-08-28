@@ -4,6 +4,7 @@ import org.generation.italy.demoxchange.model.entities.ItemCondition;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.List;
 
 public record ItemDto(
         long id,
@@ -16,5 +17,6 @@ public record ItemDto(
         ItemCondition itemCondition,
         boolean archived,
         OffsetDateTime createdAt,
-        OffsetDateTime updatedAt
+        OffsetDateTime updatedAt,
+        List<ItemImageDto> images
 ) {}
