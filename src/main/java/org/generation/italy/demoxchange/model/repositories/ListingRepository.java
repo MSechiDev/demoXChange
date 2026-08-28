@@ -11,12 +11,16 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface ListingRepository extends JpaRepository<Listing, Long> {
-    @Query("SELECT l FROM Listing l " +
-            "WHERE l.status = org.generation.italy.demoxchange.model.entities.ListingStatus.attivo " +
-            "AND (:keyword IS NULL OR LOWER(l.item.title) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
-            "AND (:categoryId IS NULL OR l.item.category.id = :categoryId) " +
-            "AND (:minPrice IS NULL OR l.item.estimatedValue >= :minPrice)" +
-            "AND (:maxPrice IS NULL OR l.item.estimatedValue <= :maxPrice)")
+    @Query("""
+    SELECT l FROM Listing l
+    JOIN l.item i
+    WHERE l.status = 'attivo'
+      AND (CAST(:keyword AS string) IS NULL OR LOWER(i.title) LIKE LOWER(CONCAT('%', CAST(:keyword AS string), '%')))
+      AND (:categoryId IS NULL OR i.category.id = :categoryId)
+      AND (:minPrice IS NULL OR i.estimatedValue >= :minPrice)
+      AND (:maxPrice IS NULL OR i.estimatedValue <= :maxPrice)
+    ORDER BY l.publishedAt DESC
+""")
     List<Listing> searchListings(
             @Param("keyword") String keyword,
             @Param("categoryId") Long categoryId,
