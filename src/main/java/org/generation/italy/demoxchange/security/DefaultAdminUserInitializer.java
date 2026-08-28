@@ -22,8 +22,8 @@ public class DefaultAdminUserInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
         // Read env vars. Do NOT default the password to an insecure value.
-        String username = System.getenv().getOrDefault("APP_ADMIN_USERNAME", "admin");
-        String password = System.getenv().get("APP_ADMIN_PASSWORD"); // intentionally no default
+        String username = System.getenv().getOrDefault("APP_HEAD_USERNAME", "admin");
+        String password = System.getenv().get("APP_HEAD_PASSWORD"); // intentionally no default
 
         if (appUserRepository.existsByUsername(username)) {
             return;

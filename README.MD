@@ -18,7 +18,7 @@ lista completa di tutte le sue reviews), richiedere i dati del profilo utente pe
 6) messaggistica privata tra clienti (inviare messaggio ad utente, vedere tutti i propri messaggi
                                    opzionalmente solo quelli non letti, rispondere al messagio, cancellare messaggio)
 
-7) admin posso creare, modificare, disattivare categorie
+7) admin possono creare, modificare, disattivare categorie
 
 8) "DOMENICO" -> creazione offerta per annuncio, visualizzazione offerte ricevute e inviate
 approvazione offerta e possibilità di fare la controfferta.
