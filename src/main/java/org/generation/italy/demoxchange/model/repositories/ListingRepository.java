@@ -1,6 +1,8 @@
 package org.generation.italy.demoxchange.model.repositories;
 
+import org.generation.italy.demoxchange.model.entities.AppUser;
 import org.generation.italy.demoxchange.model.entities.Listing;
+import org.generation.italy.demoxchange.model.entities.ListingStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,4 +23,10 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
             @Param("minPrice") BigDecimal minPrice,
             @Param("maxPrice") BigDecimal maxPrice
     );
+
+
+    List<Listing> findByItemOwner(AppUser owner);
+    List<Listing> findByStatus(ListingStatus status);
+    List<Listing> findByAcceptedCategoriesSlug(String slug);
+    boolean existsByItemId(Long itemId);
 }
