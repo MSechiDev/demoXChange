@@ -96,4 +96,8 @@ public class Listing {
     public Set<Category> getAcceptedCategories() {
         return acceptedCategories;
     }
+
+    public void setAcceptedCategories(Set<Category> acceptedCategories) {
+        this.acceptedCategories = acceptedCategories == null ? new HashSet<>() : acceptedCategories;
+    }
 }
