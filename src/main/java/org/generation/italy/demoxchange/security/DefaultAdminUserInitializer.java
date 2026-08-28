@@ -31,14 +31,14 @@ public class DefaultAdminUserInitializer implements CommandLineRunner {
 
         // If password is not provided or is obviously insecure, skip automatic creation and warn.
         if (password == null || password.isBlank()) {
-            System.err.println("[WARN] APP_ADMIN_PASSWORD not set — skipping creation of default ADMIN user. " +
-                    "To create an ADMIN user at startup set APP_ADMIN_USERNAME and APP_ADMIN_PASSWORD environment variables.");
+            System.err.println("[WARN] APP_HEAD_PASSWORD not set — skipping creation of default HEAD user. " +
+                    "To create a HEAD user at startup set APP_HEAD_USERNAME and APP_HEAD_PASSWORD environment variables.");
             return;
         }
 
         if ("admin".equals(password) || "password".equalsIgnoreCase(password)) {
-            System.err.println("[WARN] APP_ADMIN_PASSWORD is insecure (uses a common default) — skipping creation of default ADMIN user. " +
-                    "Use a strong random password via APP_ADMIN_PASSWORD.");
+            System.err.println("[WARN] APP_HEAD_PASSWORD is insecure (uses a common default) — skipping creation of default HEAD user. " +
+                    "Use a strong random password via APP_HEAD_PASSWORD.");
             return;
         }
 
