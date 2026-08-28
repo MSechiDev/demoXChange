@@ -9,7 +9,7 @@ FEATURES APPLICAZIONE DA DIVIDERE:
 2) FATTO<><><><><> creazione profilo utente (fra i dati dell'utente apparirà la media delle reviews
    e la lista completa di tutte le sue reviews), richiedere i dati del profilo utente per ID
 
-3) Giuseppe -> pubblicazione annunci + stato annuncio + preferenze
+3) FATTO<><><><><> -> pubblicazione annunci + stato annuncio + preferenze
 
 4) Francesco -> ricerca degli annunci per categoria e range di prezzo
 
