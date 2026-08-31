@@ -21,8 +21,11 @@ public class MessageController {
     }
 
     @GetMapping("/api/messages/mine")
-    public List<MessageDto> findMine(@AuthenticationPrincipal Jwt jwt) {
-        return messageService.findMine(currentUserId(jwt));
+    public List<MessageDto> findMine(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestParam(name = "unreadOnly", required = false, defaultValue = "false") boolean unreadOnly
+    ) {
+        return messageService.findMine(currentUserId(jwt), unreadOnly);
     }
 
     @GetMapping("/api/offers/{offerId}/messages")
