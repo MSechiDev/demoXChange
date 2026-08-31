@@ -139,6 +139,9 @@ public class OfferService {
             throw new BadRequestException("items_not_found", "One or more items have not been found");
         }
 
+        parentOffer.setStatus(OfferStatus.controproposta);
+        parentOffer.setRespondedAt(OffsetDateTime.now());
+
         Offer counter = new Offer(listing, offerer, createdBy);
         counter.setMessage(message);
         counter.setParentOffer(parentOffer);

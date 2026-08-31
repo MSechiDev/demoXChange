@@ -35,6 +35,12 @@ public class ExchangeController {
         return exchangeService.confirm(id, currentUserId(jwt));
     }
 
+    @PutMapping("/{id}/cancel")
+    @PreAuthorize("@exchangeService.isParticipant(#id, authentication.principal.claims['uid'])")
+    public ExchangeDto cancel(@PathVariable long id, @AuthenticationPrincipal Jwt jwt) {
+        return exchangeService.cancel(id, currentUserId(jwt));
+    }
+
     private static long currentUserId(Jwt jwt) {
         return jwt.getClaim("uid");
     }

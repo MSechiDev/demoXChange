@@ -74,6 +74,26 @@ public class ExchangeService {
         return toDto(exchange);
     }
 
+    @Transactional
+    public ExchangeDto cancel(long id, long userId) {
+        Exchange exchange = getOrThrow(id);
+
+        if (exchange.getStatus() != ExchangeStatus.in_corso) {
+            throw new BadRequestException("not_valid_status", "You can only cancel exchanges that are in_corso.");
+        }
+
+        long ownerId = exchange.getOffer().getListing().getItem().getOwner().getId();
+        long offererId = exchange.getOffer().getOfferer().getId();
+
+        if (userId != ownerId && userId != offererId) {
+            throw new ForbiddenException("not_participant", "You are not part of this exchange.");
+        }
+
+        exchange.setStatus(ExchangeStatus.annullato);
+
+        return toDto(exchange);
+    }
+
     @Transactional(readOnly = true)
     public boolean isParticipant(long exchangeId, long userId) {
         return exchangeRepository.findById(exchangeId)

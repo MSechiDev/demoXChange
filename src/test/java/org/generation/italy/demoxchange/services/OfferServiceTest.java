@@ -111,4 +111,50 @@ class OfferServiceTest {
 
         verify(exchangeRepository, never()).save(any());
     }
+
+    @Test
+    void counterOffer_setsParentStatusToControproposta() {
+        when(offerRepository.findById(3L)).thenReturn(Optional.of(offer));
+        when(appUserRepository.findById(OWNER_ID)).thenReturn(Optional.of(offer.getListing().getItem().getOwner()));
+        when(itemRepository.findAllById(List.of(5L))).thenReturn(List.of(offer.getListing().getItem()));
+        when(offerRepository.save(any(Offer.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        offerService.counterOffer(3L, List.of(5L), "controproposta", OWNER_ID);
+
+        assertThat(offer.getStatus()).isEqualTo(OfferStatus.controproposta);
+        assertThat(offer.getRespondedAt()).isNotNull();
+    }
+
+    @Test
+    void counterOffer_createsChildOfferInAttesaLinkedToParent() {
+        when(offerRepository.findById(3L)).thenReturn(Optional.of(offer));
+        when(appUserRepository.findById(OWNER_ID)).thenReturn(Optional.of(offer.getListing().getItem().getOwner()));
+        when(itemRepository.findAllById(List.of(5L))).thenReturn(List.of(offer.getListing().getItem()));
+
+        ArgumentCaptor<Offer> counterCaptor = ArgumentCaptor.forClass(Offer.class);
+        when(offerRepository.save(counterCaptor.capture())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        offerService.counterOffer(3L, List.of(5L), "controproposta", OWNER_ID);
+
+        Offer counter = counterCaptor.getValue();
+        assertThat(counter.getStatus()).isEqualTo(OfferStatus.in_attesa);
+        assertThat(counter.getParentOffer()).isSameAs(offer);
+    }
+
+    @Test
+    void counterOffer_parentNotPending_throwsBadRequest() {
+        offer.setStatus(OfferStatus.rifiutata);
+        when(offerRepository.findById(3L)).thenReturn(Optional.of(offer));
+
+        assertThatThrownBy(() -> offerService.counterOffer(3L, List.of(5L), "msg", OWNER_ID))
+                .isInstanceOf(BadRequestException.class);
+    }
+
+    @Test
+    void counterOffer_callerNotListingOwner_throwsForbidden() {
+        when(offerRepository.findById(3L)).thenReturn(Optional.of(offer));
+
+        assertThatThrownBy(() -> offerService.counterOffer(3L, List.of(5L), "msg", OFFERER_ID))
+                .isInstanceOf(ForbiddenException.class);
+    }
 }

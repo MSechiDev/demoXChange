@@ -120,6 +120,32 @@ class ExchangeServiceTest {
     }
 
     @Test
+    void cancel_participant_setsAnnullatoStatus() {
+        when(exchangeRepository.findById(1L)).thenReturn(Optional.of(exchange));
+
+        ExchangeDto result = exchangeService.cancel(1L, OWNER_ID);
+
+        assertThat(result.status()).isEqualTo(ExchangeStatus.annullato);
+    }
+
+    @Test
+    void cancel_nonParticipant_throwsForbidden() {
+        when(exchangeRepository.findById(1L)).thenReturn(Optional.of(exchange));
+
+        assertThatThrownBy(() -> exchangeService.cancel(1L, OUTSIDER_ID))
+                .isInstanceOf(ForbiddenException.class);
+    }
+
+    @Test
+    void cancel_alreadyCompleted_throwsBadRequest() {
+        exchange.setStatus(ExchangeStatus.completato);
+        when(exchangeRepository.findById(1L)).thenReturn(Optional.of(exchange));
+
+        assertThatThrownBy(() -> exchangeService.cancel(1L, OWNER_ID))
+                .isInstanceOf(BadRequestException.class);
+    }
+
+    @Test
     void isParticipant_ownerOrOfferer_returnsTrue() {
         when(exchangeRepository.findById(1L)).thenReturn(Optional.of(exchange));
 
