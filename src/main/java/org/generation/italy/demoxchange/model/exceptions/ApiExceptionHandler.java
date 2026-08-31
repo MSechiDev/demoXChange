@@ -21,4 +21,9 @@ public class ApiExceptionHandler {
     public ResponseEntity<ApiError> handleConflict(ConflictException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiError(ex.getErrorCode(), ex.getMessage()));
     }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ApiError> handleForbidden(ForbiddenException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiError(ex.getErrorCode(), ex.getMessage()));
+    }
 }
