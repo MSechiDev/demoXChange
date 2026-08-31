@@ -64,6 +64,9 @@ public class AuthService {
         if (appUserRepository.existsByUsername(request.username())) {
             throw new ConflictException("username_unavailable", "Username already exists: " + request.username());
         }
+        if (appUserRepository.existsByEmail(request.email())) {
+            throw new ConflictException("email_unavailable", "Email already exists: " + request.email());
+        }
 
         Set<UserRole> roles = parseRoles(request.roles());
         if (roles.isEmpty()) {
@@ -72,6 +75,7 @@ public class AuthService {
 
         AppUser user = new AppUser();
         user.setUsername(request.username());
+        user.setEmail(request.email());
         user.setPasswordHash(passwordEncoder.encode(request.password()));
         user.setEnabled(true);
         user.setRoles(roles);
@@ -80,6 +84,7 @@ public class AuthService {
         return new UserDto(
                 saved.getId(),
                 saved.getUsername(),
+                saved.getEmail(),
                 saved.isEnabled(),
                 saved.getRoles().stream().map(Enum::name).collect(Collectors.toSet())
         );

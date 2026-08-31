@@ -10,7 +10,7 @@ import java.util.List;
 
 public record CreateListingRequest(
         @NotBlank
-        @Size(max = 120)
+        @Size(max = 100)
         String city,
 
         @NotNull

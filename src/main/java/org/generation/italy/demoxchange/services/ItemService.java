@@ -2,10 +2,12 @@ package org.generation.italy.demoxchange.services;
 
 import org.generation.italy.demoxchange.model.dto.CreateItemRequest;
 import org.generation.italy.demoxchange.model.dto.ItemDto;
+import org.generation.italy.demoxchange.model.dto.ItemImageDto;
 import org.generation.italy.demoxchange.model.dto.UpdateItemRequest;
 import org.generation.italy.demoxchange.model.entities.AppUser;
 import org.generation.italy.demoxchange.model.entities.Category;
 import org.generation.italy.demoxchange.model.entities.Item;
+import org.generation.italy.demoxchange.model.entities.ItemImage;
 import org.generation.italy.demoxchange.model.entities.ItemCondition;
 import org.generation.italy.demoxchange.model.exceptions.BadRequestException;
 import org.generation.italy.demoxchange.model.exceptions.NotFoundException;
@@ -109,6 +111,9 @@ public class ItemService {
     }
 
     private static ItemDto toDto(Item item) {
+        List<ItemImageDto> images = item.getImages().stream()
+                .map(ItemService::toImageDto)
+                .toList();
         return new ItemDto(
                 item.getId(),
                 item.getOwner().getId(),
@@ -120,7 +125,18 @@ public class ItemService {
                 item.getItemCondition(),
                 item.isArchived(),
                 item.getCreatedAt(),
-                item.getUpdatedAt()
+                item.getUpdatedAt(),
+                images
+        );
+    }
+
+    private static ItemImageDto toImageDto(ItemImage image) {
+        return new ItemImageDto(
+                image.getId(),
+                image.getItem().getId(),
+                image.getUrl(),
+                image.getDisplayOrder(),
+                image.getCreatedAt()
         );
     }
 }

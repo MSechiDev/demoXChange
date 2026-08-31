@@ -26,6 +26,10 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+  servlet:
+    multipart:
+      max-file-size: 5MB      # tetto per singolo file caricato
+      max-request-size: 6MB   # un filo piu' grande, per l'overhead del multipart
 
 logging: # voglio vedere non solo stringhe sql che verranno lanciate a hibernate ma anche parametri
   # che ci attacca nel prepared statement
@@ -48,3 +52,5 @@ app:
     issuer: ${JWT_ISSUER:xChange_db}
     secret: ${JWT_SECRET} # lo leggiamo da variabili d'ambiente
     ttl: ${JWT_TTL:PT1H} # ISO-8601 duration (e.g., PT1H = 1 hour)
+  uploads:
+    dir: ${UPLOADS_DIR:uploads} # cartella (relativa alla working dir) dove salviamo le immagini degli item

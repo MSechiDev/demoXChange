@@ -28,8 +28,11 @@ public class MessageService {
     }
 
     @Transactional(readOnly = true)
-    public List<MessageDto> findMine(long userId) {
-        return messageRepository.findLatestMessagePerThreadForUser(userId).stream()
+    public List<MessageDto> findMine(long userId, boolean unreadOnly) {
+        List<Message> messages = unreadOnly
+                ? messageRepository.findUnreadForUser(userId)
+                : messageRepository.findLatestMessagePerThreadForUser(userId);
+        return messages.stream()
                 .map(MessageService::toDto)
                 .toList();
     }
