@@ -1,5 +1,6 @@
 package org.generation.italy.demoxchange.model.dto;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
@@ -12,6 +13,11 @@ public record CreateUserRequest(
         @NotBlank
         @Size(max = 70)
         String username,
+
+        @NotBlank
+        @Email
+        @Size(max = 254)
+        String email,
 
         @NotBlank
         @StrongPassword
