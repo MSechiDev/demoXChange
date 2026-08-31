@@ -29,6 +29,7 @@ public class ReviewService {
 
     @Transactional
     public ReviewSummaryDto createReview(CreateReviewDto dto, String currentUsername) {
+
         // 1. Recupera l'autore dal SecurityContext (username da JWT)
         AppUser author = appUserRepository.findByUsername(currentUsername)
                 .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
@@ -39,57 +40,48 @@ public class ReviewService {
 
         // 3. Controllo stato dello scambio
         if (exchange.getStatus() != ExchangeStatus.completato) {
-            throw new IllegalStateException("Impossibile lasciare una recensione: lo scambio non è ancora completato.");
+            throw new IllegalStateException(
+                    "Impossibile lasciare una recensione: lo scambio non è ancora completato.");
         }
 
-        // 4. Estrazione sicura delle parti (evita errori se mancanti nel DB)
-// 4. Estrazione sicura delle parti (con try-catch per ignorare i proxy Hibernate mancanti)
-        AppUser offerer = null;
-        try {
-            if (exchange.getOffer() != null) {
-                offerer = exchange.getOffer().getOfferer();
-            }
-        } catch (jakarta.persistence.EntityNotFoundException e) {
-            offerer = null;
+        // 4. Estrazione delle due parti coinvolte nello scambio.
+        //    NIENTE try-catch "silenzioso": se manca un dato collegato,
+        //    è un problema di integrità che va segnalato chiaramente,
+        //    non nascosto con un valore null passato avanti.
+        if (exchange.getOffer() == null) {
+            throw new IllegalStateException(
+                    "Dati incoerenti: lo scambio " + exchange.getId() + " non ha un'offerta collegata.");
         }
 
-        AppUser owner = null;
-        try {
-            if (exchange.getOffer() != null
-                    && exchange.getOffer().getListing() != null
-                    && exchange.getOffer().getListing().getItem() != null) {
-                owner = exchange.getOffer().getListing().getItem().getOwner();
-            }
-        } catch (jakarta.persistence.EntityNotFoundException e) {
-            // Se Hibernate non trova la Listing 1 o l'Item nel DB, imposta owner a null senza far fallire la richiesta
-            owner = null;
+        AppUser offerer = exchange.getOffer().getOfferer();
+
+        if (exchange.getOffer().getListing() == null
+                || exchange.getOffer().getListing().getItem() == null) {
+            throw new IllegalStateException(
+                    "Dati incoerenti: impossibile risalire al proprietario dell'item per lo scambio "
+                            + exchange.getId() + ".");
         }
 
+        AppUser owner = exchange.getOffer().getListing().getItem().getOwner();
 
-        // 5. Determinazione del destinatario
-        AppUser recipient = null;
-
-        if (offerer != null && author.getId().equals(offerer.getId())) {
+        // 5. Determinazione del destinatario in base a chi è l'autore.
+        //    L'autore DEVE essere una delle due parti coinvolte: se non lo è,
+        //    non è autorizzato a recensire questo scambio.
+        AppUser recipient;
+        if (author.getId().equals(offerer.getId())) {
             recipient = owner;
-        } else if (owner != null && author.getId().equals(owner.getId())) {
+        } else if (author.getId().equals(owner.getId())) {
             recipient = offerer;
+        } else {
+            // L'utente autenticato non fa parte di questo scambio: 403, non un fallback a caso.
+            throw new IllegalStateException(
+                    "Non sei tra i partecipanti di questo scambio: non puoi lasciare una recensione.");
         }
 
-        // Se l'utente non fa parte della relazione o l'altro utente non esiste
-        if (recipient == null || recipient.getId().equals(author.getId())) {
-            // Recupera un utente specifico via ID per evitare la deserializzazione dell'enum errato (es. ID 1 o 2)
-            Long alternativeId = author.getId().equals(1L) ? 2L : 1L;
-            recipient = appUserRepository.findById(alternativeId)
-                    .orElseGet(() -> appUserRepository.getReferenceById(alternativeId));
-        }
-
-        // Se l'utente non fa parte delle relazioni o non è stato trovato l'altro partecipante
-        if (recipient == null || recipient.getId().equals(author.getId())) {
-            // Cerca un qualunque utente nel DB che NON sia l'autore
-            recipient = appUserRepository.findAll().stream()
-                    .filter(u -> !u.getId().equals(author.getId()))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalStateException("Nessun altro utente presente nel DB a cui inviare la recensione."));
+        // Guardia di sicurezza extra: non dovrebbe mai accadere se i dati sono coerenti
+        // (offerer e owner sono per definizione persone diverse), ma meglio essere espliciti.
+        if (recipient.getId().equals(author.getId())) {
+            throw new IllegalStateException("Non puoi recensire te stesso.");
         }
 
         // 6. Verifica recensione duplicata
