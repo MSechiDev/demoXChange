@@ -36,6 +36,7 @@ class ExchangeServiceTest {
     private static final long OUTSIDER_ID = 99L;
 
     private Exchange exchange;
+    private Listing listing;
 
     @BeforeEach
     void setUp() {
@@ -49,8 +50,9 @@ class ExchangeServiceTest {
         Item item = new Item(owner, category, "Chitarra", "descrizione", ItemCondition.buone);
         ReflectionTestUtils.setField(item, "id", 5L);
 
-        Listing listing = new Listing(item, "Cagliari");
+        listing = new Listing(item, "Cagliari");
         ReflectionTestUtils.setField(listing, "id", 6L);
+        listing.setStatus(ListingStatus.in_trattativa);
 
         Offer offer = new Offer(listing, offerer, offerer);
         ReflectionTestUtils.setField(offer, "id", 3L);
@@ -82,6 +84,7 @@ class ExchangeServiceTest {
         assertThat(result.ownerConfirmedAt()).isNotNull();
         assertThat(result.offererConfirmedAt()).isNotNull();
         assertThat(result.completedAt()).isNotNull();
+        assertThat(listing.getStatus()).isEqualTo(ListingStatus.scambiato);
     }
 
     @Test
@@ -120,12 +123,13 @@ class ExchangeServiceTest {
     }
 
     @Test
-    void cancel_participant_setsAnnullatoStatus() {
+    void cancel_participant_setsAnnullatoStatusAndReactivatesListing() {
         when(exchangeRepository.findById(1L)).thenReturn(Optional.of(exchange));
 
         ExchangeDto result = exchangeService.cancel(1L, OWNER_ID);
 
         assertThat(result.status()).isEqualTo(ExchangeStatus.annullato);
+        assertThat(listing.getStatus()).isEqualTo(ListingStatus.attivo);
     }
 
     @Test

@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import org.generation.italy.demoxchange.model.dto.CreateListingRequest;
 import org.generation.italy.demoxchange.model.dto.ListingDto;
 import org.generation.italy.demoxchange.model.dto.UpdateListingStatusRequest;
-import org.generation.italy.demoxchange.model.exceptions.BadRequestException;
 import org.generation.italy.demoxchange.services.ListingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -45,19 +44,7 @@ public class ListingController {
         return listingService.updateStatus(extractUserId(jwt), id, request.status());
     }
 
-    private Long extractUserId(Jwt jwt) {
-        if (jwt == null) {
-            throw new BadRequestException("INVALID_TOKEN", "Authentication token is required");
-        }
-
-        Object userId = jwt.getClaim("uid");
-        if (userId instanceof Number number) {
-            return number.longValue();
-        }
-        if (userId != null) {
-            return Long.parseLong(userId.toString());
-        }
-
-        throw new BadRequestException("INVALID_TOKEN", "User identifier not found in token");
+    private static Long extractUserId(Jwt jwt) {
+        return jwt.getClaim("uid");
     }
 }

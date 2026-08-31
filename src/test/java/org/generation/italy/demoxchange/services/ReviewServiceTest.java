@@ -3,6 +3,9 @@ package org.generation.italy.demoxchange.services;
 import org.generation.italy.demoxchange.model.dto.CreateReviewDto;
 import org.generation.italy.demoxchange.model.dto.ReviewSummaryDto;
 import org.generation.italy.demoxchange.model.entities.*;
+import org.generation.italy.demoxchange.model.exceptions.BadRequestException;
+import org.generation.italy.demoxchange.model.exceptions.ConflictException;
+import org.generation.italy.demoxchange.model.exceptions.ForbiddenException;
 import org.generation.italy.demoxchange.model.repositories.AppUserRepository;
 import org.generation.italy.demoxchange.model.repositories.ExchangeRepository;
 import org.generation.italy.demoxchange.model.repositories.ReviewRepository;
@@ -55,7 +58,7 @@ class ReviewServiceTest {
     }
 
     @Test
-    void createReview_exchangeNotCompleted_throwsIllegalState() {
+    void createReview_exchangeNotCompleted_throwsBadRequest() {
         exchange.setStatus(ExchangeStatus.in_corso);
         when(appUserRepository.findByUsername("bob")).thenReturn(Optional.of(offerer));
         when(exchangeRepository.findById(1L)).thenReturn(Optional.of(exchange));
@@ -63,11 +66,11 @@ class ReviewServiceTest {
         CreateReviewDto dto = new CreateReviewDto(1L, (short) 5, "ottimo");
 
         assertThatThrownBy(() -> reviewService.createReview(dto, "bob"))
-                .isInstanceOf(IllegalStateException.class);
+                .isInstanceOf(BadRequestException.class);
     }
 
     @Test
-    void createReview_authorNotPartOfExchange_throwsIllegalState() {
+    void createReview_authorNotPartOfExchange_throwsForbidden() {
         AppUser outsider = new AppUser("carol", "hash", null);
         ReflectionTestUtils.setField(outsider, "id", 99L);
 
@@ -77,11 +80,11 @@ class ReviewServiceTest {
         CreateReviewDto dto = new CreateReviewDto(1L, (short) 5, "ottimo");
 
         assertThatThrownBy(() -> reviewService.createReview(dto, "carol"))
-                .isInstanceOf(IllegalStateException.class);
+                .isInstanceOf(ForbiddenException.class);
     }
 
     @Test
-    void createReview_duplicateReview_throwsIllegalState() {
+    void createReview_duplicateReview_throwsConflict() {
         when(appUserRepository.findByUsername("bob")).thenReturn(Optional.of(offerer));
         when(exchangeRepository.findById(1L)).thenReturn(Optional.of(exchange));
         when(reviewRepository.existsByExchangeIdAndAuthorId(1L, 2L)).thenReturn(true);
@@ -89,7 +92,7 @@ class ReviewServiceTest {
         CreateReviewDto dto = new CreateReviewDto(1L, (short) 5, "ottimo");
 
         assertThatThrownBy(() -> reviewService.createReview(dto, "bob"))
-                .isInstanceOf(IllegalStateException.class);
+                .isInstanceOf(ConflictException.class);
     }
 
     @Test

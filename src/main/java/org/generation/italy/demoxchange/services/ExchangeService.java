@@ -3,6 +3,7 @@ package org.generation.italy.demoxchange.services;
 import org.generation.italy.demoxchange.model.dto.ExchangeDto;
 import org.generation.italy.demoxchange.model.entities.Exchange;
 import org.generation.italy.demoxchange.model.entities.ExchangeStatus;
+import org.generation.italy.demoxchange.model.entities.ListingStatus;
 import org.generation.italy.demoxchange.model.exceptions.BadRequestException;
 import org.generation.italy.demoxchange.model.exceptions.ConflictException;
 import org.generation.italy.demoxchange.model.exceptions.ForbiddenException;
@@ -69,6 +70,7 @@ public class ExchangeService {
         if (exchange.getOwnerConfirmedAt() != null && exchange.getOffererConfirmedAt() != null) {
             exchange.setStatus(ExchangeStatus.completato);
             exchange.setCompletedAt(now);
+            exchange.getOffer().getListing().setStatus(ListingStatus.scambiato);
         }
 
         return toDto(exchange);
@@ -90,6 +92,7 @@ public class ExchangeService {
         }
 
         exchange.setStatus(ExchangeStatus.annullato);
+        exchange.getOffer().getListing().setStatus(ListingStatus.attivo);
 
         return toDto(exchange);
     }

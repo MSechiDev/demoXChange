@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class OfferService {
@@ -34,9 +36,9 @@ public class OfferService {
         Listing listing = listingRepository.findById(listingId)
                 .orElseThrow(() -> new NotFoundException("listing_not_found", "Listing not found: " + listingId));
 
-        if (listing.getStatus() != ListingStatus.attivo && listing.getStatus() != ListingStatus.in_trattativa) {
+        if (listing.getStatus() != ListingStatus.attivo) {
             throw new BadRequestException("listing_not_available",
-                    "You can only make an offer on listings that are 'attivo' or 'in_trattativa'.");
+                    "You can only make an offer on listings that are 'attivo'.");
         }
 
         AppUser offerer = appUserRepository.findById(userId)
@@ -50,6 +52,8 @@ public class OfferService {
         if (itemIds.size() != items.size() || !tuttiValidi) {
             throw new BadRequestException("items_not_found", "One or more items have not been found");
         }
+
+        assertItemsMatchAcceptedCategories(listing, items);
 
         Offer offer = new Offer(listing, offerer, offerer);
         offer.setMessage(message);
@@ -103,6 +107,8 @@ public class OfferService {
                               o.setRespondedAt(now);
                           });
 
+        offer.getListing().setStatus(ListingStatus.in_trattativa);
+
         Exchange exchange = new Exchange(offer);
         exchangeRepository.save(exchange);
 
@@ -139,6 +145,8 @@ public class OfferService {
             throw new BadRequestException("items_not_found", "One or more items have not been found");
         }
 
+        assertItemsMatchAcceptedCategories(listing, items);
+
         parentOffer.setStatus(OfferStatus.controproposta);
         parentOffer.setRespondedAt(OffsetDateTime.now());
 
@@ -150,6 +158,20 @@ public class OfferService {
         Offer saved = offerRepository.save(counter);
 
         return toDto(saved);
+    }
+
+    private static void assertItemsMatchAcceptedCategories(Listing listing, List<Item> items) {
+        Set<Long> acceptedCategoryIds = listing.getAcceptedCategories().stream()
+                .map(Category::getId)
+                .collect(Collectors.toSet());
+
+        boolean allAccepted = items.stream()
+                .allMatch(item -> acceptedCategoryIds.contains(item.getCategory().getId()));
+
+        if (!allAccepted) {
+            throw new BadRequestException("item_category_not_accepted",
+                    "One or more offered items are not in a category accepted by this listing.");
+        }
     }
 
     private OfferDto toDto(Offer offer) {

@@ -13,5 +13,6 @@ public record ListingSearchDto(
         String itemDescription,
         BigDecimal itemEstimatedValue,
         Long categoryId,
-        String categoryName
+        String categoryName,
+        String primaryImageUrl
 ) {}

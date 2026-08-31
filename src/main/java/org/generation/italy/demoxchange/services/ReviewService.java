@@ -6,6 +6,10 @@ import org.generation.italy.demoxchange.model.entities.AppUser;
 import org.generation.italy.demoxchange.model.entities.Exchange;
 import org.generation.italy.demoxchange.model.entities.ExchangeStatus;
 import org.generation.italy.demoxchange.model.entities.Review;
+import org.generation.italy.demoxchange.model.exceptions.BadRequestException;
+import org.generation.italy.demoxchange.model.exceptions.ConflictException;
+import org.generation.italy.demoxchange.model.exceptions.ForbiddenException;
+import org.generation.italy.demoxchange.model.exceptions.NotFoundException;
 import org.generation.italy.demoxchange.model.repositories.AppUserRepository;
 import org.generation.italy.demoxchange.model.repositories.ExchangeRepository;
 import org.generation.italy.demoxchange.model.repositories.ReviewRepository;
@@ -32,22 +36,23 @@ public class ReviewService {
 
         // 1. Recupera l'autore dal SecurityContext (username da JWT)
         AppUser author = appUserRepository.findByUsername(currentUsername)
-                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
+                .orElseThrow(() -> new NotFoundException("user_not_found", "Utente non trovato"));
 
         // 2. Recupera lo scambio
         Exchange exchange = exchangeRepository.findById(dto.exchangeId())
-                .orElseThrow(() -> new IllegalArgumentException("Scambio non trovato"));
+                .orElseThrow(() -> new NotFoundException("exchange_not_found", "Scambio non trovato"));
 
         // 3. Controllo stato dello scambio
         if (exchange.getStatus() != ExchangeStatus.completato) {
-            throw new IllegalStateException(
+            throw new BadRequestException("exchange_not_completed",
                     "Impossibile lasciare una recensione: lo scambio non è ancora completato.");
         }
 
         // 4. Estrazione delle due parti coinvolte nello scambio.
         //    NIENTE try-catch "silenzioso": se manca un dato collegato,
         //    è un problema di integrità che va segnalato chiaramente,
-        //    non nascosto con un valore null passato avanti.
+        //    non nascosto con un valore null passato avanti. Restano IllegalStateException
+        //    (quindi 500) di proposito: non sono errori di input dell'utente ma corruzione dati.
         if (exchange.getOffer() == null) {
             throw new IllegalStateException(
                     "Dati incoerenti: lo scambio " + exchange.getId() + " non ha un'offerta collegata.");
@@ -74,19 +79,19 @@ public class ReviewService {
             recipient = offerer;
         } else {
             // L'utente autenticato non fa parte di questo scambio: 403, non un fallback a caso.
-            throw new IllegalStateException(
+            throw new ForbiddenException("not_participant",
                     "Non sei tra i partecipanti di questo scambio: non puoi lasciare una recensione.");
         }
 
         // Guardia di sicurezza extra: non dovrebbe mai accadere se i dati sono coerenti
         // (offerer e owner sono per definizione persone diverse), ma meglio essere espliciti.
         if (recipient.getId().equals(author.getId())) {
-            throw new IllegalStateException("Non puoi recensire te stesso.");
+            throw new BadRequestException("cannot_review_self", "Non puoi recensire te stesso.");
         }
 
         // 6. Verifica recensione duplicata
         if (reviewRepository.existsByExchangeIdAndAuthorId(exchange.getId(), author.getId())) {
-            throw new IllegalStateException("Hai già rilasciato una recensione per questo scambio.");
+            throw new ConflictException("review_already_exists", "Hai già rilasciato una recensione per questo scambio.");
         }
 
         // 7. Salvataggio

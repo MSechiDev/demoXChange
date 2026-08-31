@@ -12,7 +12,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -23,13 +22,6 @@ import java.util.UUID;
 public class ImageStorageService {
 
     private static final String PUBLIC_PREFIX = "/files/";
-
-    /** content-type ammessi -> estensione da usare sul file salvato */
-    private static final Map<String, String> ALLOWED_TYPES = Map.of(
-            "image/jpeg", "jpg",
-            "image/png", "png",
-            "image/webp", "webp"
-    );
 
     private final Path root;
 
@@ -73,15 +65,43 @@ public class ImageStorageService {
         }
     }
 
+    /**
+     * Determina l'estensione dai byte reali del file (magic numbers), non dal
+     * Content-Type dichiarato dal client, che e' facilmente falsificabile.
+     */
     private String validateAndGetExtension(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             throw new BadRequestException("invalid_file", "File is empty");
         }
-        String contentType = file.getContentType();
-        String ext = contentType == null ? null : ALLOWED_TYPES.get(contentType.toLowerCase());
+
+        byte[] header;
+        try (InputStream in = file.getInputStream()) {
+            header = in.readNBytes(12);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Could not read image", e);
+        }
+
+        String ext = detectExtension(header);
         if (ext == null) {
-            throw new BadRequestException("invalid_file", "Unsupported image type: " + contentType);
+            throw new BadRequestException("invalid_file", "Unsupported or invalid image file");
         }
         return ext;
+    }
+
+    private static String detectExtension(byte[] h) {
+        if (h.length >= 3 && (h[0] & 0xFF) == 0xFF && (h[1] & 0xFF) == 0xD8 && (h[2] & 0xFF) == 0xFF) {
+            return "jpg";
+        }
+        if (h.length >= 8
+                && (h[0] & 0xFF) == 0x89 && h[1] == 'P' && h[2] == 'N' && h[3] == 'G'
+                && h[4] == 0x0D && h[5] == 0x0A && h[6] == 0x1A && h[7] == 0x0A) {
+            return "png";
+        }
+        if (h.length >= 12
+                && h[0] == 'R' && h[1] == 'I' && h[2] == 'F' && h[3] == 'F'
+                && h[8] == 'W' && h[9] == 'E' && h[10] == 'B' && h[11] == 'P') {
+            return "webp";
+        }
+        return null;
     }
 }

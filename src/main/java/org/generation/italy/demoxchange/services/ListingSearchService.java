@@ -39,7 +39,9 @@ public class ListingSearchService {
                 (listing.getItem() != null && listing.getItem().getCategory() != null)
                         ? listing.getItem().getCategory().getId() : null,
                 (listing.getItem() != null && listing.getItem().getCategory() != null)
-                        ? listing.getItem().getCategory().getName() : null
+                        ? listing.getItem().getCategory().getName() : null,
+                (listing.getItem() != null && !listing.getItem().getImages().isEmpty())
+                        ? listing.getItem().getImages().get(0).getUrl() : null
         );
     }
 }

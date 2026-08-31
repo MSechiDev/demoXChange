@@ -39,24 +39,67 @@ class OfferServiceTest {
 
     private Listing listing;
     private Offer offer;
+    private Category category;
+    private AppUser offerer;
+    private Item bobItem;
 
     @BeforeEach
     void setUp() {
         AppUser owner = new AppUser("alice", "hash", null);
         ReflectionTestUtils.setField(owner, "id", OWNER_ID);
 
-        AppUser offerer = new AppUser("bob", "hash", null);
+        offerer = new AppUser("bob", "hash", null);
         ReflectionTestUtils.setField(offerer, "id", OFFERER_ID);
 
-        Category category = new Category("Musica", "musica", null);
+        category = new Category("Musica", "musica", null);
+        ReflectionTestUtils.setField(category, "id", 10L);
         Item item = new Item(owner, category, "Chitarra", "descrizione", ItemCondition.buone);
         ReflectionTestUtils.setField(item, "id", 5L);
 
         listing = new Listing(item, "Cagliari");
         ReflectionTestUtils.setField(listing, "id", 6L);
+        listing.setAcceptedCategories(java.util.Set.of(category));
 
         offer = new Offer(listing, offerer, offerer);
         ReflectionTestUtils.setField(offer, "id", 3L);
+
+        bobItem = new Item(offerer, category, "Cuffie", "descrizione", ItemCondition.nuovo);
+        ReflectionTestUtils.setField(bobItem, "id", 7L);
+    }
+
+    @Test
+    void makeOffer_listingNotActive_throwsBadRequest() {
+        listing.setStatus(ListingStatus.in_trattativa);
+        when(listingRepository.findById(6L)).thenReturn(Optional.of(listing));
+
+        assertThatThrownBy(() -> offerService.makeOffer(6L, List.of(7L), "msg", OFFERER_ID))
+                .isInstanceOf(BadRequestException.class);
+    }
+
+    @Test
+    void makeOffer_itemCategoryNotAccepted_throwsBadRequest() {
+        Category otherCategory = new Category("Sport", "sport", null);
+        ReflectionTestUtils.setField(otherCategory, "id", 20L);
+        bobItem.setCategory(otherCategory);
+
+        when(listingRepository.findById(6L)).thenReturn(Optional.of(listing));
+        when(appUserRepository.findById(OFFERER_ID)).thenReturn(Optional.of(offerer));
+        when(itemRepository.findAllById(List.of(7L))).thenReturn(List.of(bobItem));
+
+        assertThatThrownBy(() -> offerService.makeOffer(6L, List.of(7L), "msg", OFFERER_ID))
+                .isInstanceOf(BadRequestException.class);
+    }
+
+    @Test
+    void makeOffer_validRequest_createsOfferInAttesa() {
+        when(listingRepository.findById(6L)).thenReturn(Optional.of(listing));
+        when(appUserRepository.findById(OFFERER_ID)).thenReturn(Optional.of(offerer));
+        when(itemRepository.findAllById(List.of(7L))).thenReturn(List.of(bobItem));
+        when(offerRepository.save(any(Offer.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        OfferDto result = offerService.makeOffer(6L, List.of(7L), "msg", OFFERER_ID);
+
+        assertThat(result.status()).isEqualTo(OfferStatus.in_attesa);
     }
 
     @Test
@@ -68,6 +111,7 @@ class OfferServiceTest {
 
         assertThat(result.status()).isEqualTo(OfferStatus.accettata);
         assertThat(offer.getRespondedAt()).isNotNull();
+        assertThat(listing.getStatus()).isEqualTo(ListingStatus.in_trattativa);
 
         ArgumentCaptor<Exchange> exchangeCaptor = ArgumentCaptor.forClass(Exchange.class);
         verify(exchangeRepository).save(exchangeCaptor.capture());
