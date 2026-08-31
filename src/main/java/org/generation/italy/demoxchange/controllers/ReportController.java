@@ -47,7 +47,7 @@ public class ReportController {
         return reportService.create(currentUserId(jwt), request);
     }
 
-    @PutMapping("/{id}/review")
+    @PatchMapping("/{id}/review")
     @PreAuthorize("hasRole('ADMIN')")
     public ReportDto review(@PathVariable long id, @AuthenticationPrincipal Jwt jwt, @Valid @RequestBody ReviewReportRequest request) {
         return reportService.review(id, currentUserId(jwt), request);

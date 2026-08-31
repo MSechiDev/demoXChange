@@ -20,16 +20,20 @@ FEATURES APPLICAZIONE DA DIVIDERE:
 
 7) FATTO<><><><><> Admin: creare, modificare, disattivare categorie
 
-8) Domenico -> creazione offerta per annuncio, visualizzazione offerte ricevute e inviate,
+8) FATTO<><><><><> creazione offerta per annuncio, visualizzazione offerte ricevute e inviate,
    approvazione offerta e possibilità di fare la controfferta
 
-9) Francesco ->Possibilità di lasciare una recensione a scambio concluso, e al termine può rilasciare
+9) FATTO<><><><><> Possibilità di lasciare una recensione a scambio concluso, e al termine può rilasciare
    una valutazione dell'esito
 
 10) FATTO<><><><><> l'utente può lanciare una segnalazione (report) nel caso il prodotto non
     rispettasse le linee guida o non fosse conforme alle regolamentazioni (sarà poi l'admin
     a prendere in carico la segnalazione, approvandola o rifiutandola)
 
-11) Mattia ->Gestione foto degli oggetti (upload, ordinamento e cancellazione delle immagini di un item)
+11) FATTO<><><><><> Gestione foto degli oggetti (upload, ordinamento e cancellazione delle immagini di un item)
+
+12) FATTO<><><><><> Conferma/annullamento dello scambio (entrambe le parti confermano la
+    consegna per completare lo scambio; lo stato dell'annuncio si aggiorna di conseguenza -
+    torna disponibile se lo scambio viene annullato)
 
 

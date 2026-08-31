@@ -29,13 +29,13 @@ public class ExchangeController {
         return exchangeService.findById(id);
     }
 
-    @PutMapping("/{id}/confirm")
+    @PatchMapping("/{id}/confirm")
     @PreAuthorize("@exchangeService.isParticipant(#id, authentication.principal.claims['uid'])")
     public ExchangeDto confirm(@PathVariable long id, @AuthenticationPrincipal Jwt jwt) {
         return exchangeService.confirm(id, currentUserId(jwt));
     }
 
-    @PutMapping("/{id}/cancel")
+    @PatchMapping("/{id}/cancel")
     @PreAuthorize("@exchangeService.isParticipant(#id, authentication.principal.claims['uid'])")
     public ExchangeDto cancel(@PathVariable long id, @AuthenticationPrincipal Jwt jwt) {
         return exchangeService.cancel(id, currentUserId(jwt));

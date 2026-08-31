@@ -1,7 +1,6 @@
 package org.generation.italy.demoxchange.controllers;
 
 import org.generation.italy.demoxchange.model.dto.CounterOfferRequest;
-import org.generation.italy.demoxchange.model.dto.MakeOfferRequest;
 import org.generation.italy.demoxchange.model.dto.OfferDto;
 import org.generation.italy.demoxchange.services.OfferService;
 import org.springframework.http.HttpStatus;
@@ -21,17 +20,6 @@ public class OfferController {
         this.offerService = offerService;
     }
 
-    @PostMapping("/listings/{listingId}")
-    @ResponseStatus(HttpStatus.CREATED)
-    public OfferDto makeOffer(
-            @PathVariable Long listingId,
-            @RequestBody MakeOfferRequest request,
-            @AuthenticationPrincipal Jwt jwt) {
-
-        return offerService.makeOffer(
-                listingId, request.itemIds(), request.message(), currentUserId(jwt));
-    }
-
     @GetMapping("/sent")
     public List<OfferDto> sentOffers(@AuthenticationPrincipal Jwt jwt) {
         return offerService.sentOffers(currentUserId(jwt));
@@ -42,7 +30,7 @@ public class OfferController {
         return offerService.receivedOffers(currentUserId(jwt));
     }
 
-    @PutMapping("/{offerId}/approve")
+    @PatchMapping("/{offerId}/approve")
     public OfferDto approveOffer(
             @PathVariable Long offerId,
             @AuthenticationPrincipal Jwt jwt) {

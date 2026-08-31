@@ -40,6 +40,8 @@ CREATE TABLE public.app_users (
     username character varying(70) NOT NULL,
     password_hash character varying(256) NOT NULL,
     enabled boolean DEFAULT true NOT NULL,
+    email character varying(254),
+    CONSTRAINT ck_app_users_email_format CHECK (((email IS NULL) OR ((email)::text ~* '^[^@[:space:]]+@[^@[:space:]]+\.[^@[:space:]]+$'::text))),
     CONSTRAINT ck_app_users_password_hash_not_blank CHECK ((btrim((password_hash)::text) <> ''::text)),
     CONSTRAINT ck_app_users_username_not_blank CHECK ((btrim((username)::text) <> ''::text))
 );
@@ -583,6 +585,14 @@ ALTER TABLE ONLY public.reports
 
 ALTER TABLE ONLY public.reviews
     ADD CONSTRAINT pk_reviews PRIMARY KEY (id);
+
+
+--
+-- Name: app_users uq_app_users_email; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.app_users
+    ADD CONSTRAINT uq_app_users_email UNIQUE (email);
 
 
 --
