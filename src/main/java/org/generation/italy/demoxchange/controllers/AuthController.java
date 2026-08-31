@@ -30,9 +30,9 @@ public class AuthController {
         // JWT authentication is stateless; clients log out by discarding the token.
     }
 
-    @PostMapping("/users")
+    @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('ADMIN')")
+  //  @PreAuthorize("hasRole('ADMIN')")
     public UserDto createUser(@Valid @RequestBody CreateUserRequest request) {
         return authService.createUser(request);
     }
