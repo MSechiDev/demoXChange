@@ -3,10 +3,10 @@ package org.generation.italy.demoxchange.controllers;
 import org.generation.italy.demoxchange.model.dto.CounterOfferRequest;
 import org.generation.italy.demoxchange.model.dto.MakeOfferRequest;
 import org.generation.italy.demoxchange.model.dto.OfferDto;
-import org.generation.italy.demoxchange.security.AppUserPrincipal;
 import org.generation.italy.demoxchange.services.OfferService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,28 +26,28 @@ public class OfferController {
     public OfferDto makeOffer(
             @PathVariable Long listingId,
             @RequestBody MakeOfferRequest request,
-            @AuthenticationPrincipal AppUserPrincipal principal) {
+            @AuthenticationPrincipal Jwt jwt) {
 
         return offerService.makeOffer(
-                listingId, request.itemIds(), request.message(), principal.getUser().getId());
+                listingId, request.itemIds(), request.message(), currentUserId(jwt));
     }
 
     @GetMapping("/sent")
-    public List<OfferDto> sentOffers(@AuthenticationPrincipal AppUserPrincipal principal) {
-        return offerService.sentOffers(principal.getUser().getId());
+    public List<OfferDto> sentOffers(@AuthenticationPrincipal Jwt jwt) {
+        return offerService.sentOffers(currentUserId(jwt));
     }
 
     @GetMapping("/received")
-    public List<OfferDto> receivedOffers(@AuthenticationPrincipal AppUserPrincipal principal) {
-        return offerService.receivedOffers(principal.getUser().getId());
+    public List<OfferDto> receivedOffers(@AuthenticationPrincipal Jwt jwt) {
+        return offerService.receivedOffers(currentUserId(jwt));
     }
 
     @PutMapping("/{offerId}/approve")
     public OfferDto approveOffer(
             @PathVariable Long offerId,
-            @AuthenticationPrincipal AppUserPrincipal principal) {
+            @AuthenticationPrincipal Jwt jwt) {
 
-        return offerService.approveOffer(offerId, principal.getUser().getId());
+        return offerService.approveOffer(offerId, currentUserId(jwt));
     }
 
     @PostMapping("/{offerId}/counter")
@@ -55,9 +55,13 @@ public class OfferController {
     public OfferDto counterOffer(
             @PathVariable Long offerId,
             @RequestBody CounterOfferRequest request,
-            @AuthenticationPrincipal AppUserPrincipal principal) {
+            @AuthenticationPrincipal Jwt jwt) {
 
         return offerService.counterOffer(
-                offerId, request.itemIds(), request.message(), principal.getUser().getId());
+                offerId, request.itemIds(), request.message(), currentUserId(jwt));
+    }
+
+    private static Long currentUserId(Jwt jwt) {
+        return jwt.getClaim("uid");
     }
 }

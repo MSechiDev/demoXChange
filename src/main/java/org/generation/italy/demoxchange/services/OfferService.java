@@ -10,6 +10,7 @@ import org.generation.italy.demoxchange.model.repositories.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Service
@@ -88,14 +89,19 @@ public class OfferService {
             throw new BadRequestException("not_valid_status", "You can only approve offers that are in attesa.");
         }
 
+        OffsetDateTime now = OffsetDateTime.now();
         offer.setStatus(OfferStatus.accettata);
+        offer.setRespondedAt(now);
 
         List<Offer> otherPendingOffers = offerRepository.findByListingIdAndStatus(
                     offer.getListing().getId(), OfferStatus.in_attesa);
 
         otherPendingOffers.stream()
                           .filter(o -> !o.getId().equals(offer.getId()))
-                          .forEach(o -> o.setStatus(OfferStatus.rifiutata));
+                          .forEach(o -> {
+                              o.setStatus(OfferStatus.rifiutata);
+                              o.setRespondedAt(now);
+                          });
 
         Exchange exchange = new Exchange(offer);
         exchangeRepository.save(exchange);
