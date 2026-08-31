@@ -11,7 +11,7 @@ FEATURES APPLICAZIONE DA DIVIDERE:
 
 3) FATTO<><><><><> -> pubblicazione annunci + stato annuncio + preferenze
 
-4) Francesco -> ricerca degli annunci per categoria e range di prezzo
+4) FATTO<><><><><> -> ricerca degli annunci per categoria e range di prezzo
 
 5) FATTO<><><><><> Inserimento oggetti, ricercarli, cancellarli
 
