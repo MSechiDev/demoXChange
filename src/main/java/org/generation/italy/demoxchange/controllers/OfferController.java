@@ -52,4 +52,18 @@ public class OfferController {
     private static Long currentUserId(Jwt jwt) {
         return jwt.getClaim("uid");
     }
+
+    @PatchMapping("/{offerId}/reject")
+    public OfferDto rejectOffer(
+            @PathVariable Long offerId,
+            @AuthenticationPrincipal Jwt jwt) {
+        return offerService.rejectOffer(offerId, currentUserId(jwt));
+    }
+
+    @PatchMapping("/{offerId}/cancel")
+    public OfferDto cancelOffer(
+            @PathVariable Long offerId,
+            @AuthenticationPrincipal Jwt jwt) {
+        return offerService.cancelOffer(offerId, currentUserId(jwt));
+    }
 }

@@ -174,6 +174,42 @@ public class OfferService {
         }
     }
 
+    @Transactional
+    public OfferDto rejectOffer(Long offerId, Long userId) {
+        Offer offer = offerRepository.findById(offerId)
+                .orElseThrow(() -> new NotFoundException("offer_not_found", "Offer not found"));
+
+        if (!offer.getListing().getItem().getOwner().getId().equals(userId)) {
+            throw new ForbiddenException("offer_not_owned", "You can only reject offers on your own listings.");
+        }
+
+        if (offer.getStatus() != OfferStatus.in_attesa) {
+            throw new BadRequestException("not_valid_status", "You can only reject offers that are in_attesa.");
+        }
+
+        offer.setStatus(OfferStatus.rifiutata);
+
+        return toDto(offer);
+    }
+
+    @Transactional
+    public OfferDto cancelOffer(Long offerId, Long userId) {
+        Offer offer = offerRepository.findById(offerId)
+                .orElseThrow(() -> new NotFoundException("offer_not_found", "Offer not found"));
+
+        if (!offer.getOfferer().getId().equals(userId)) {
+            throw new ForbiddenException("offer_not_owned", "You can only cancel your own offers.");
+        }
+
+        if (offer.getStatus() != OfferStatus.in_attesa) {
+            throw new BadRequestException("not_valid_status", "You can only cancel offers that are in_attesa.");
+        }
+
+        offer.setStatus(OfferStatus.annullata);
+
+        return toDto(offer);
+    }
+
     private OfferDto toDto(Offer offer) {
         List<ItemSummaryDto> offeredItemsDto = offer.getItems().stream()
                 .map(item -> new ItemSummaryDto(
@@ -181,7 +217,7 @@ public class OfferService {
                         item.getTitle(),
                         item.getItemCondition(),
                         item.getEstimatedValue(),
-                        item.getImages().isEmpty() ? null : item.getImages().get(0).getUrl()
+                        item.getImages().isEmpty() ? null : item.getImages().getFirst().getUrl()
                 ))
                 .toList();
 
