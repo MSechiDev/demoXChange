@@ -2,6 +2,7 @@ package org.generation.italy.demoxchange.controllers;
 
 import jakarta.validation.Valid;
 import org.generation.italy.demoxchange.model.dto.CreateListingRequest;
+import org.generation.italy.demoxchange.model.dto.ListingDetailDto;
 import org.generation.italy.demoxchange.model.dto.ListingDto;
 import org.generation.italy.demoxchange.model.dto.ListingSearchDto;
 import org.generation.italy.demoxchange.model.dto.MakeOfferRequest;
@@ -40,6 +41,11 @@ public class ListingController {
             @RequestParam(required = false) BigDecimal maxPrice
     ) {
         return listingSearchService.searchListings(keyword, categoryId, minPrice, maxPrice);
+    }
+
+    @GetMapping("/{id}")
+    public ListingDetailDto findById(@PathVariable Long id) {
+        return listingSearchService.getListingDetail(id);
     }
 
     @PostMapping
