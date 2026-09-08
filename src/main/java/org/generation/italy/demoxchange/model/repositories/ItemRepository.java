@@ -23,9 +23,9 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
               and (:minValue is null or (i.estimatedValue is not null and i.estimatedValue >= :minValue))
               and (:maxValue is null or (i.estimatedValue is not null and i.estimatedValue <= :maxValue))
               and (
-                    :q is null
-                    or lower(i.title) like lower(concat('%', :q, '%'))
-                    or lower(i.description) like lower(concat('%', :q, '%'))
+                    cast(:q as string) is null
+                    or lower(i.title) like lower(concat('%', cast(:q as string), '%'))
+                    or lower(i.description) like lower(concat('%', cast(:q as string), '%'))
               )
             order by i.createdAt desc
             """)
