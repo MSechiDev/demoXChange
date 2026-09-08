@@ -5,6 +5,7 @@ import org.generation.italy.demoxchange.model.dto.CreateReportRequest;
 import org.generation.italy.demoxchange.model.dto.ReportDto;
 import org.generation.italy.demoxchange.model.dto.ReviewReportRequest;
 import org.generation.italy.demoxchange.model.entities.ReportStatus;
+import org.generation.italy.demoxchange.model.exceptions.BadRequestException;
 import org.generation.italy.demoxchange.services.ReportService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,8 +32,14 @@ public class ReportController {
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public List<ReportDto> findAll(@RequestParam(required = false) String status) {
-        ReportStatus filter = status == null ? null : ReportStatus.valueOf(status);
-        return reportService.findAll(filter);
+        if (status == null || status.isBlank()) {
+            return reportService.findAll(null);
+        }
+        try {
+            return reportService.findAll(ReportStatus.valueOf(status));
+        } catch (IllegalArgumentException ex) {
+            throw new BadRequestException("invalid_status", "Invalid report status: " + status);
+        }
     }
 
     @GetMapping("/{id}")
