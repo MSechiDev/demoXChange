@@ -1,0 +1,1188 @@
+> Task :compileJava UP-TO-DATE
+> Task :processResources UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :resolveMainClassName
+
+> Task :bootRun
+2026-09-08T17:59:49.843+02:00  INFO 15236 --- [xChange] [           main] o.g.i.d.DemoXChangeApplication           : Starting DemoXChangeApplication using Java 26.0.1 with PID 15236 (C:\Dev\Java\Project\demoXChange\build\classes\java\main started by Manuel in C:\Dev\Java\Project\demoXChange)
+2026-09-08T17:59:49.855+02:00  INFO 15236 --- [xChange] [           main] o.g.i.d.DemoXChangeApplication           : No active profile set, falling back to 1 default profile: "default"
+2026-09-08T17:59:51.176+02:00  INFO 15236 --- [xChange] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-08T17:59:51.301+02:00  INFO 15236 --- [xChange] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 112 ms. Found 10 JPA repository interfaces.
+2026-09-08T17:59:52.177+02:00  INFO 15236 --- [xChange] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-09-08T17:59:52.198+02:00  INFO 15236 --- [xChange] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-08T17:59:52.199+02:00  INFO 15236 --- [xChange] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-09-08T17:59:52.292+02:00  INFO 15236 --- [xChange] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 2253 ms
+2026-09-08T17:59:52.582+02:00  INFO 15236 --- [xChange] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-09-08T17:59:52.667+02:00  INFO 15236 --- [xChange] [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.4.1.Final
+2026-09-08T17:59:53.521+02:00  INFO 15236 --- [xChange] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-08T17:59:53.576+02:00  INFO 15236 --- [xChange] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-09-08T17:59:54.262+02:00  INFO 15236 --- [xChange] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@b56c222
+2026-09-08T17:59:54.265+02:00  INFO 15236 --- [xChange] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-09-08T17:59:54.331+02:00  WARN 15236 --- [xChange] [           main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-09-08T17:59:54.388+02:00  INFO 15236 --- [xChange] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://localhost:5432/xChange_db]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 18.4
+	Default catalog/schema: xChange_db/public
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-09-08T17:59:56.620+02:00  INFO 15236 --- [xChange] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-09-08T17:59:56.729+02:00  INFO 15236 --- [xChange] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-08T17:59:56.911+02:00  INFO 15236 --- [xChange] [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-09-08T17:59:58.003+02:00  INFO 15236 --- [xChange] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userDetailsService
+2026-09-08T18:00:00.803+02:00  WARN 15236 --- [xChange] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-09-08T18:00:01.527+02:00  INFO 15236 --- [xChange] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-09-08T18:00:01.532+02:00  INFO 15236 --- [xChange] [           main] o.g.i.d.DemoXChangeApplication           : Started DemoXChangeApplication in 12.484 seconds (process running for 13.241)
+2026-09-08T18:00:01.659+02:00 DEBUG 15236 --- [xChange] [           main] org.hibernate.SQL                        : 
+    select
+        au1_0.user_id 
+    from
+        app_users au1_0 
+    where
+        au1_0.username=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        au1_0.user_id 
+    from
+        app_users au1_0 
+    where
+        au1_0.username=? 
+    fetch
+        first ? rows only
+2026-09-08T18:00:01.662+02:00 TRACE 15236 --- [xChange] [           main] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- [KetchOxy13]
+2026-09-08T18:00:01.662+02:00 TRACE 15236 --- [xChange] [           main] org.hibernate.orm.jdbc.bind              : binding parameter (2:INTEGER) <- [1]
+2026-09-08T18:00:01.850+02:00  INFO 15236 --- [xChange] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-08T18:00:01.851+02:00  INFO 15236 --- [xChange] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-09-08T18:00:01.852+02:00  INFO 15236 --- [xChange] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-09-08T18:00:01.933+02:00 DEBUG 15236 --- [xChange] [nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        c1_0.id,
+        c1_0.is_active,
+        c1_0.created_at,
+        c1_0.description,
+        c1_0.name,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categories c1_0 
+    order by
+        c1_0.name
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.is_active,
+        c1_0.created_at,
+        c1_0.description,
+        c1_0.name,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categories c1_0 
+    order by
+        c1_0.name
+2026-09-08T18:00:16.768+02:00 DEBUG 15236 --- [xChange] [nio-8080-exec-9] org.hibernate.SQL                        : 
+    select
+        c1_0.id,
+        c1_0.is_active,
+        c1_0.created_at,
+        c1_0.description,
+        c1_0.name,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categories c1_0 
+    order by
+        c1_0.name
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.is_active,
+        c1_0.created_at,
+        c1_0.description,
+        c1_0.name,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categories c1_0 
+    order by
+        c1_0.name
+2026-09-08T18:00:16.820+02:00 DEBUG 15236 --- [xChange] [io-8080-exec-10] org.hibernate.SQL                        : 
+    select
+        i1_0.id,
+        i1_0.is_archived,
+        i1_0.category_id,
+        i1_0.created_at,
+        i1_0.description,
+        i1_0.estimated_value,
+        i1_0.item_condition,
+        i1_0.owner_id,
+        i1_0.title,
+        i1_0.updated_at 
+    from
+        items i1_0 
+    where
+        i1_0.owner_id=? 
+        and (
+            ? is null 
+            or i1_0.category_id=?
+        ) 
+        and (
+            ? is null 
+            or i1_0.item_condition=?
+        ) 
+        and (
+            ?=true 
+            or i1_0.is_archived=false
+        ) 
+        and (
+            ? is null 
+            or (
+                i1_0.estimated_value is not null 
+                and i1_0.estimated_value>=?
+            )
+        ) 
+        and (
+            ? is null 
+            or (
+                i1_0.estimated_value is not null 
+                and i1_0.estimated_value<=?
+            )
+        ) 
+        and (
+            cast(? as varchar) is null 
+            or lower(i1_0.title) like lower(('%'||cast(? as varchar)||'%')) escape '' 
+            or lower(i1_0.description) like lower(('%'||cast(? as varchar)||'%')) escape ''
+        ) 
+    order by
+        i1_0.created_at desc
+Hibernate: 
+    select
+        i1_0.id,
+        i1_0.is_archived,
+        i1_0.category_id,
+        i1_0.created_at,
+        i1_0.description,
+        i1_0.estimated_value,
+        i1_0.item_condition,
+        i1_0.owner_id,
+        i1_0.title,
+        i1_0.updated_at 
+    from
+        items i1_0 
+    where
+        i1_0.owner_id=? 
+        and (
+            ? is null 
+            or i1_0.category_id=?
+        ) 
+        and (
+            ? is null 
+            or i1_0.item_condition=?
+        ) 
+        and (
+            ?=true 
+            or i1_0.is_archived=false
+        ) 
+        and (
+            ? is null 
+            or (
+                i1_0.estimated_value is not null 
+                and i1_0.estimated_value>=?
+            )
+        ) 
+        and (
+            ? is null 
+            or (
+                i1_0.estimated_value is not null 
+                and i1_0.estimated_value<=?
+            )
+        ) 
+        and (
+            cast(? as varchar) is null 
+            or lower(i1_0.title) like lower(('%'||cast(? as varchar)||'%')) escape '' 
+            or lower(i1_0.description) like lower(('%'||cast(? as varchar)||'%')) escape ''
+        ) 
+    order by
+        i1_0.created_at desc
+2026-09-08T18:00:16.822+02:00 TRACE 15236 --- [xChange] [io-8080-exec-10] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [1]
+2026-09-08T18:00:16.826+02:00 TRACE 15236 --- [xChange] [io-8080-exec-10] org.hibernate.orm.jdbc.bind              : binding parameter (2:BIGINT) <- [null]
+2026-09-08T18:00:16.826+02:00 TRACE 15236 --- [xChange] [io-8080-exec-10] org.hibernate.orm.jdbc.bind              : binding parameter (3:BIGINT) <- [null]
+2026-09-08T18:00:16.826+02:00 TRACE 15236 --- [xChange] [io-8080-exec-10] org.hibernate.orm.jdbc.bind              : binding parameter (4:VARCHAR) <- [null]
+2026-09-08T18:00:16.826+02:00 TRACE 15236 --- [xChange] [io-8080-exec-10] org.hibernate.orm.jdbc.bind              : binding parameter (5:VARCHAR) <- [null]
+2026-09-08T18:00:16.831+02:00 TRACE 15236 --- [xChange] [io-8080-exec-10] org.hibernate.orm.jdbc.bind              : binding parameter (6:BOOLEAN) <- [false]
+2026-09-08T18:00:16.840+02:00 TRACE 15236 --- [xChange] [io-8080-exec-10] org.hibernate.orm.jdbc.bind              : binding parameter (7:NUMERIC) <- [null]
+2026-09-08T18:00:16.842+02:00 TRACE 15236 --- [xChange] [io-8080-exec-10] org.hibernate.orm.jdbc.bind              : binding parameter (8:NUMERIC) <- [null]
+2026-09-08T18:00:16.843+02:00 TRACE 15236 --- [xChange] [io-8080-exec-10] org.hibernate.orm.jdbc.bind              : binding parameter (9:NUMERIC) <- [null]
+2026-09-08T18:00:16.843+02:00 TRACE 15236 --- [xChange] [io-8080-exec-10] org.hibernate.orm.jdbc.bind              : binding parameter (10:NUMERIC) <- [null]
+2026-09-08T18:00:16.844+02:00 TRACE 15236 --- [xChange] [io-8080-exec-10] org.hibernate.orm.jdbc.bind              : binding parameter (11:JAVA_OBJECT) <- [null]
+2026-09-08T18:00:16.844+02:00 TRACE 15236 --- [xChange] [io-8080-exec-10] org.hibernate.orm.jdbc.bind              : binding parameter (12:JAVA_OBJECT) <- [null]
+2026-09-08T18:00:16.844+02:00 TRACE 15236 --- [xChange] [io-8080-exec-10] org.hibernate.orm.jdbc.bind              : binding parameter (13:JAVA_OBJECT) <- [null]
+2026-09-08T18:00:16.908+02:00 DEBUG 15236 --- [xChange] [io-8080-exec-10] org.hibernate.SQL                        : 
+    select
+        i1_0.item_id,
+        i1_0.id,
+        i1_0.created_at,
+        i1_0.display_order,
+        i1_0.url 
+    from
+        item_images i1_0 
+    where
+        i1_0.item_id=? 
+    order by
+        i1_0.display_order
+Hibernate: 
+    select
+        i1_0.item_id,
+        i1_0.id,
+        i1_0.created_at,
+        i1_0.display_order,
+        i1_0.url 
+    from
+        item_images i1_0 
+    where
+        i1_0.item_id=? 
+    order by
+        i1_0.display_order
+2026-09-08T18:00:16.908+02:00 TRACE 15236 --- [xChange] [io-8080-exec-10] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [10]
+2026-09-08T18:00:16.924+02:00 DEBUG 15236 --- [xChange] [io-8080-exec-10] org.hibernate.SQL                        : 
+    select
+        c1_0.id,
+        c1_0.is_active,
+        c1_0.created_at,
+        c1_0.description,
+        c1_0.name,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.is_active,
+        c1_0.created_at,
+        c1_0.description,
+        c1_0.name,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+2026-09-08T18:00:16.925+02:00 TRACE 15236 --- [xChange] [io-8080-exec-10] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [9001]
+2026-09-08T18:00:16.936+02:00 DEBUG 15236 --- [xChange] [io-8080-exec-10] org.hibernate.SQL                        : 
+    select
+        i1_0.item_id,
+        i1_0.id,
+        i1_0.created_at,
+        i1_0.display_order,
+        i1_0.url 
+    from
+        item_images i1_0 
+    where
+        i1_0.item_id=? 
+    order by
+        i1_0.display_order
+Hibernate: 
+    select
+        i1_0.item_id,
+        i1_0.id,
+        i1_0.created_at,
+        i1_0.display_order,
+        i1_0.url 
+    from
+        item_images i1_0 
+    where
+        i1_0.item_id=? 
+    order by
+        i1_0.display_order
+2026-09-08T18:00:16.937+02:00 TRACE 15236 --- [xChange] [io-8080-exec-10] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [9]
+2026-09-08T18:00:16.942+02:00 DEBUG 15236 --- [xChange] [io-8080-exec-10] org.hibernate.SQL                        : 
+    select
+        c1_0.id,
+        c1_0.is_active,
+        c1_0.created_at,
+        c1_0.description,
+        c1_0.name,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.is_active,
+        c1_0.created_at,
+        c1_0.description,
+        c1_0.name,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+2026-09-08T18:00:16.942+02:00 TRACE 15236 --- [xChange] [io-8080-exec-10] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [9]
+2026-09-08T18:00:19.234+02:00 DEBUG 15236 --- [xChange] [nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        au1_0.user_id,
+        au1_0.email,
+        au1_0.enabled,
+        au1_0.password_hash,
+        r1_0.user_id,
+        r1_0.role,
+        au1_0.username 
+    from
+        app_users au1_0 
+    left join
+        app_user_roles r1_0 
+            on au1_0.user_id=r1_0.user_id 
+    where
+        au1_0.user_id=?
+Hibernate: 
+    select
+        au1_0.user_id,
+        au1_0.email,
+        au1_0.enabled,
+        au1_0.password_hash,
+        r1_0.user_id,
+        r1_0.role,
+        au1_0.username 
+    from
+        app_users au1_0 
+    left join
+        app_user_roles r1_0 
+            on au1_0.user_id=r1_0.user_id 
+    where
+        au1_0.user_id=?
+2026-09-08T18:00:19.236+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-2] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [1]
+2026-09-08T18:00:19.253+02:00 DEBUG 15236 --- [xChange] [nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        l1_0.id,
+        l1_0.city,
+        l1_0.item_id,
+        l1_0.published_at,
+        l1_0.status,
+        l1_0.updated_at 
+    from
+        listings l1_0 
+    join
+        items i1_0 
+            on i1_0.id=l1_0.item_id 
+    where
+        i1_0.owner_id=?
+Hibernate: 
+    select
+        l1_0.id,
+        l1_0.city,
+        l1_0.item_id,
+        l1_0.published_at,
+        l1_0.status,
+        l1_0.updated_at 
+    from
+        listings l1_0 
+    join
+        items i1_0 
+            on i1_0.id=l1_0.item_id 
+    where
+        i1_0.owner_id=?
+2026-09-08T18:00:19.254+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-2] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [1]
+2026-09-08T18:00:19.269+02:00 DEBUG 15236 --- [xChange] [nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        i1_0.id,
+        i1_0.is_archived,
+        i1_0.category_id,
+        i1_0.created_at,
+        i1_0.description,
+        i1_0.estimated_value,
+        i1_0.item_condition,
+        i1_0.owner_id,
+        i1_0.title,
+        i1_0.updated_at 
+    from
+        items i1_0 
+    where
+        i1_0.id=?
+Hibernate: 
+    select
+        i1_0.id,
+        i1_0.is_archived,
+        i1_0.category_id,
+        i1_0.created_at,
+        i1_0.description,
+        i1_0.estimated_value,
+        i1_0.item_condition,
+        i1_0.owner_id,
+        i1_0.title,
+        i1_0.updated_at 
+    from
+        items i1_0 
+    where
+        i1_0.id=?
+2026-09-08T18:00:19.270+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-2] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [9]
+2026-09-08T18:00:19.275+02:00 DEBUG 15236 --- [xChange] [nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        ac1_0.listing_id,
+        ac1_1.id,
+        ac1_1.is_active,
+        ac1_1.created_at,
+        ac1_1.description,
+        ac1_1.name,
+        ac1_1.slug,
+        ac1_1.updated_at 
+    from
+        listing_accepted_categories ac1_0 
+    join
+        categories ac1_1 
+            on ac1_1.id=ac1_0.category_id 
+    where
+        ac1_0.listing_id=?
+Hibernate: 
+    select
+        ac1_0.listing_id,
+        ac1_1.id,
+        ac1_1.is_active,
+        ac1_1.created_at,
+        ac1_1.description,
+        ac1_1.name,
+        ac1_1.slug,
+        ac1_1.updated_at 
+    from
+        listing_accepted_categories ac1_0 
+    join
+        categories ac1_1 
+            on ac1_1.id=ac1_0.category_id 
+    where
+        ac1_0.listing_id=?
+2026-09-08T18:00:19.275+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-2] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [9]
+2026-09-08T18:00:19.283+02:00 DEBUG 15236 --- [xChange] [nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        i1_0.id,
+        i1_0.is_archived,
+        i1_0.category_id,
+        i1_0.created_at,
+        i1_0.description,
+        i1_0.estimated_value,
+        i1_0.item_condition,
+        i1_0.owner_id,
+        i1_0.title,
+        i1_0.updated_at 
+    from
+        items i1_0 
+    where
+        i1_0.id=?
+Hibernate: 
+    select
+        i1_0.id,
+        i1_0.is_archived,
+        i1_0.category_id,
+        i1_0.created_at,
+        i1_0.description,
+        i1_0.estimated_value,
+        i1_0.item_condition,
+        i1_0.owner_id,
+        i1_0.title,
+        i1_0.updated_at 
+    from
+        items i1_0 
+    where
+        i1_0.id=?
+2026-09-08T18:00:19.283+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-2] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [10]
+2026-09-08T18:00:19.285+02:00 DEBUG 15236 --- [xChange] [nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        ac1_0.listing_id,
+        ac1_1.id,
+        ac1_1.is_active,
+        ac1_1.created_at,
+        ac1_1.description,
+        ac1_1.name,
+        ac1_1.slug,
+        ac1_1.updated_at 
+    from
+        listing_accepted_categories ac1_0 
+    join
+        categories ac1_1 
+            on ac1_1.id=ac1_0.category_id 
+    where
+        ac1_0.listing_id=?
+Hibernate: 
+    select
+        ac1_0.listing_id,
+        ac1_1.id,
+        ac1_1.is_active,
+        ac1_1.created_at,
+        ac1_1.description,
+        ac1_1.name,
+        ac1_1.slug,
+        ac1_1.updated_at 
+    from
+        listing_accepted_categories ac1_0 
+    join
+        categories ac1_1 
+            on ac1_1.id=ac1_0.category_id 
+    where
+        ac1_0.listing_id=?
+2026-09-08T18:00:19.286+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-2] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [13]
+2026-09-08T18:00:21.202+02:00 DEBUG 15236 --- [xChange] [nio-8080-exec-3] org.hibernate.SQL                        : 
+    select
+        c1_0.id,
+        c1_0.is_active,
+        c1_0.created_at,
+        c1_0.description,
+        c1_0.name,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categories c1_0 
+    order by
+        c1_0.name
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.is_active,
+        c1_0.created_at,
+        c1_0.description,
+        c1_0.name,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categories c1_0 
+    order by
+        c1_0.name
+2026-09-08T18:00:21.204+02:00 DEBUG 15236 --- [xChange] [nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        i1_0.id,
+        i1_0.is_archived,
+        i1_0.category_id,
+        i1_0.created_at,
+        i1_0.description,
+        i1_0.estimated_value,
+        i1_0.item_condition,
+        i1_0.owner_id,
+        i1_0.title,
+        i1_0.updated_at 
+    from
+        items i1_0 
+    where
+        i1_0.owner_id=? 
+        and (
+            ? is null 
+            or i1_0.category_id=?
+        ) 
+        and (
+            ? is null 
+            or i1_0.item_condition=?
+        ) 
+        and (
+            ?=true 
+            or i1_0.is_archived=false
+        ) 
+        and (
+            ? is null 
+            or (
+                i1_0.estimated_value is not null 
+                and i1_0.estimated_value>=?
+            )
+        ) 
+        and (
+            ? is null 
+            or (
+                i1_0.estimated_value is not null 
+                and i1_0.estimated_value<=?
+            )
+        ) 
+        and (
+            cast(? as varchar) is null 
+            or lower(i1_0.title) like lower(('%'||cast(? as varchar)||'%')) escape '' 
+            or lower(i1_0.description) like lower(('%'||cast(? as varchar)||'%')) escape ''
+        ) 
+    order by
+        i1_0.created_at desc
+Hibernate: 
+    select
+        i1_0.id,
+        i1_0.is_archived,
+        i1_0.category_id,
+        i1_0.created_at,
+        i1_0.description,
+        i1_0.estimated_value,
+        i1_0.item_condition,
+        i1_0.owner_id,
+        i1_0.title,
+        i1_0.updated_at 
+    from
+        items i1_0 
+    where
+        i1_0.owner_id=? 
+        and (
+            ? is null 
+            or i1_0.category_id=?
+        ) 
+        and (
+            ? is null 
+            or i1_0.item_condition=?
+        ) 
+        and (
+            ?=true 
+            or i1_0.is_archived=false
+        ) 
+        and (
+            ? is null 
+            or (
+                i1_0.estimated_value is not null 
+                and i1_0.estimated_value>=?
+            )
+        ) 
+        and (
+            ? is null 
+            or (
+                i1_0.estimated_value is not null 
+                and i1_0.estimated_value<=?
+            )
+        ) 
+        and (
+            cast(? as varchar) is null 
+            or lower(i1_0.title) like lower(('%'||cast(? as varchar)||'%')) escape '' 
+            or lower(i1_0.description) like lower(('%'||cast(? as varchar)||'%')) escape ''
+        ) 
+    order by
+        i1_0.created_at desc
+2026-09-08T18:00:21.205+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-4] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [1]
+2026-09-08T18:00:21.205+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-4] org.hibernate.orm.jdbc.bind              : binding parameter (2:BIGINT) <- [null]
+2026-09-08T18:00:21.205+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-4] org.hibernate.orm.jdbc.bind              : binding parameter (3:BIGINT) <- [null]
+2026-09-08T18:00:21.205+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-4] org.hibernate.orm.jdbc.bind              : binding parameter (4:VARCHAR) <- [null]
+2026-09-08T18:00:21.205+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-4] org.hibernate.orm.jdbc.bind              : binding parameter (5:VARCHAR) <- [null]
+2026-09-08T18:00:21.205+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-4] org.hibernate.orm.jdbc.bind              : binding parameter (6:BOOLEAN) <- [false]
+2026-09-08T18:00:21.205+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-4] org.hibernate.orm.jdbc.bind              : binding parameter (7:NUMERIC) <- [null]
+2026-09-08T18:00:21.206+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-4] org.hibernate.orm.jdbc.bind              : binding parameter (8:NUMERIC) <- [null]
+2026-09-08T18:00:21.206+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-4] org.hibernate.orm.jdbc.bind              : binding parameter (9:NUMERIC) <- [null]
+2026-09-08T18:00:21.206+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-4] org.hibernate.orm.jdbc.bind              : binding parameter (10:NUMERIC) <- [null]
+2026-09-08T18:00:21.206+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-4] org.hibernate.orm.jdbc.bind              : binding parameter (11:JAVA_OBJECT) <- [null]
+2026-09-08T18:00:21.206+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-4] org.hibernate.orm.jdbc.bind              : binding parameter (12:JAVA_OBJECT) <- [null]
+2026-09-08T18:00:21.206+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-4] org.hibernate.orm.jdbc.bind              : binding parameter (13:JAVA_OBJECT) <- [null]
+2026-09-08T18:00:21.216+02:00 DEBUG 15236 --- [xChange] [nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        i1_0.item_id,
+        i1_0.id,
+        i1_0.created_at,
+        i1_0.display_order,
+        i1_0.url 
+    from
+        item_images i1_0 
+    where
+        i1_0.item_id=? 
+    order by
+        i1_0.display_order
+Hibernate: 
+    select
+        i1_0.item_id,
+        i1_0.id,
+        i1_0.created_at,
+        i1_0.display_order,
+        i1_0.url 
+    from
+        item_images i1_0 
+    where
+        i1_0.item_id=? 
+    order by
+        i1_0.display_order
+2026-09-08T18:00:21.216+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-4] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [10]
+2026-09-08T18:00:21.224+02:00 DEBUG 15236 --- [xChange] [nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        c1_0.id,
+        c1_0.is_active,
+        c1_0.created_at,
+        c1_0.description,
+        c1_0.name,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.is_active,
+        c1_0.created_at,
+        c1_0.description,
+        c1_0.name,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+2026-09-08T18:00:21.224+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-4] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [9001]
+2026-09-08T18:00:21.229+02:00 DEBUG 15236 --- [xChange] [nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        i1_0.item_id,
+        i1_0.id,
+        i1_0.created_at,
+        i1_0.display_order,
+        i1_0.url 
+    from
+        item_images i1_0 
+    where
+        i1_0.item_id=? 
+    order by
+        i1_0.display_order
+Hibernate: 
+    select
+        i1_0.item_id,
+        i1_0.id,
+        i1_0.created_at,
+        i1_0.display_order,
+        i1_0.url 
+    from
+        item_images i1_0 
+    where
+        i1_0.item_id=? 
+    order by
+        i1_0.display_order
+2026-09-08T18:00:21.230+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-4] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [9]
+2026-09-08T18:00:21.233+02:00 DEBUG 15236 --- [xChange] [nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        c1_0.id,
+        c1_0.is_active,
+        c1_0.created_at,
+        c1_0.description,
+        c1_0.name,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.is_active,
+        c1_0.created_at,
+        c1_0.description,
+        c1_0.name,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+2026-09-08T18:00:21.234+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-4] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [9]
+2026-09-08T18:00:29.638+02:00 DEBUG 15236 --- [xChange] [nio-8080-exec-5] org.hibernate.SQL                        : 
+    select
+        l1_0.id,
+        l1_0.city,
+        l1_0.item_id,
+        l1_0.published_at,
+        l1_0.status,
+        l1_0.updated_at 
+    from
+        listings l1_0 
+    where
+        l1_0.id=?
+Hibernate: 
+    select
+        l1_0.id,
+        l1_0.city,
+        l1_0.item_id,
+        l1_0.published_at,
+        l1_0.status,
+        l1_0.updated_at 
+    from
+        listings l1_0 
+    where
+        l1_0.id=?
+2026-09-08T18:00:29.638+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-5] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [7]
+2026-09-08T18:00:29.641+02:00 DEBUG 15236 --- [xChange] [nio-8080-exec-5] org.hibernate.SQL                        : 
+    select
+        i1_0.id,
+        i1_0.is_archived,
+        i1_0.category_id,
+        i1_0.created_at,
+        i1_0.description,
+        i1_0.estimated_value,
+        i1_0.item_condition,
+        i1_0.owner_id,
+        i1_0.title,
+        i1_0.updated_at 
+    from
+        items i1_0 
+    where
+        i1_0.id=?
+Hibernate: 
+    select
+        i1_0.id,
+        i1_0.is_archived,
+        i1_0.category_id,
+        i1_0.created_at,
+        i1_0.description,
+        i1_0.estimated_value,
+        i1_0.item_condition,
+        i1_0.owner_id,
+        i1_0.title,
+        i1_0.updated_at 
+    from
+        items i1_0 
+    where
+        i1_0.id=?
+2026-09-08T18:00:29.642+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-5] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [7]
+2026-09-08T18:00:29.644+02:00 DEBUG 15236 --- [xChange] [nio-8080-exec-5] org.hibernate.SQL                        : 
+    select
+        c1_0.id,
+        c1_0.is_active,
+        c1_0.created_at,
+        c1_0.description,
+        c1_0.name,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.is_active,
+        c1_0.created_at,
+        c1_0.description,
+        c1_0.name,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+2026-09-08T18:00:29.644+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-5] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [1]
+2026-09-08T18:00:29.646+02:00 DEBUG 15236 --- [xChange] [nio-8080-exec-5] org.hibernate.SQL                        : 
+    select
+        ac1_0.listing_id,
+        ac1_1.id,
+        ac1_1.is_active,
+        ac1_1.created_at,
+        ac1_1.description,
+        ac1_1.name,
+        ac1_1.slug,
+        ac1_1.updated_at 
+    from
+        listing_accepted_categories ac1_0 
+    join
+        categories ac1_1 
+            on ac1_1.id=ac1_0.category_id 
+    where
+        ac1_0.listing_id=?
+Hibernate: 
+    select
+        ac1_0.listing_id,
+        ac1_1.id,
+        ac1_1.is_active,
+        ac1_1.created_at,
+        ac1_1.description,
+        ac1_1.name,
+        ac1_1.slug,
+        ac1_1.updated_at 
+    from
+        listing_accepted_categories ac1_0 
+    join
+        categories ac1_1 
+            on ac1_1.id=ac1_0.category_id 
+    where
+        ac1_0.listing_id=?
+2026-09-08T18:00:29.646+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-5] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [7]
+2026-09-08T18:00:29.650+02:00 DEBUG 15236 --- [xChange] [nio-8080-exec-5] org.hibernate.SQL                        : 
+    select
+        i1_0.item_id,
+        i1_0.id,
+        i1_0.created_at,
+        i1_0.display_order,
+        i1_0.url 
+    from
+        item_images i1_0 
+    where
+        i1_0.item_id=? 
+    order by
+        i1_0.display_order
+Hibernate: 
+    select
+        i1_0.item_id,
+        i1_0.id,
+        i1_0.created_at,
+        i1_0.display_order,
+        i1_0.url 
+    from
+        item_images i1_0 
+    where
+        i1_0.item_id=? 
+    order by
+        i1_0.display_order
+2026-09-08T18:00:29.652+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-5] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [7]
+2026-09-08T18:00:55.396+02:00 DEBUG 15236 --- [xChange] [nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        i1_0.id,
+        i1_0.is_archived,
+        i1_0.category_id,
+        i1_0.created_at,
+        i1_0.description,
+        i1_0.estimated_value,
+        i1_0.item_condition,
+        i1_0.owner_id,
+        i1_0.title,
+        i1_0.updated_at 
+    from
+        items i1_0 
+    where
+        i1_0.owner_id=? 
+        and (
+            ? is null 
+            or i1_0.category_id=?
+        ) 
+        and (
+            ? is null 
+            or i1_0.item_condition=?
+        ) 
+        and (
+            ?=true 
+            or i1_0.is_archived=false
+        ) 
+        and (
+            ? is null 
+            or (
+                i1_0.estimated_value is not null 
+                and i1_0.estimated_value>=?
+            )
+        ) 
+        and (
+            ? is null 
+            or (
+                i1_0.estimated_value is not null 
+                and i1_0.estimated_value<=?
+            )
+        ) 
+        and (
+            cast(? as varchar) is null 
+            or lower(i1_0.title) like lower(('%'||cast(? as varchar)||'%')) escape '' 
+            or lower(i1_0.description) like lower(('%'||cast(? as varchar)||'%')) escape ''
+        ) 
+    order by
+        i1_0.created_at desc
+Hibernate: 
+    select
+        i1_0.id,
+        i1_0.is_archived,
+        i1_0.category_id,
+        i1_0.created_at,
+        i1_0.description,
+        i1_0.estimated_value,
+        i1_0.item_condition,
+        i1_0.owner_id,
+        i1_0.title,
+        i1_0.updated_at 
+    from
+        items i1_0 
+    where
+        i1_0.owner_id=? 
+        and (
+            ? is null 
+            or i1_0.category_id=?
+        ) 
+        and (
+            ? is null 
+            or i1_0.item_condition=?
+        ) 
+        and (
+            ?=true 
+            or i1_0.is_archived=false
+        ) 
+        and (
+            ? is null 
+            or (
+                i1_0.estimated_value is not null 
+                and i1_0.estimated_value>=?
+            )
+        ) 
+        and (
+            ? is null 
+            or (
+                i1_0.estimated_value is not null 
+                and i1_0.estimated_value<=?
+            )
+        ) 
+        and (
+            cast(? as varchar) is null 
+            or lower(i1_0.title) like lower(('%'||cast(? as varchar)||'%')) escape '' 
+            or lower(i1_0.description) like lower(('%'||cast(? as varchar)||'%')) escape ''
+        ) 
+    order by
+        i1_0.created_at desc
+2026-09-08T18:00:55.398+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [1]
+2026-09-08T18:00:55.399+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (2:BIGINT) <- [null]
+2026-09-08T18:00:55.399+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (3:BIGINT) <- [null]
+2026-09-08T18:00:55.399+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (4:VARCHAR) <- [null]
+2026-09-08T18:00:55.399+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (5:VARCHAR) <- [null]
+2026-09-08T18:00:55.399+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (6:BOOLEAN) <- [false]
+2026-09-08T18:00:55.399+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (7:NUMERIC) <- [null]
+2026-09-08T18:00:55.399+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (8:NUMERIC) <- [null]
+2026-09-08T18:00:55.399+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (9:NUMERIC) <- [null]
+2026-09-08T18:00:55.399+02:00 DEBUG 15236 --- [xChange] [io-8080-exec-10] org.hibernate.SQL                        : 
+    select
+        c1_0.id,
+        c1_0.is_active,
+        c1_0.created_at,
+        c1_0.description,
+        c1_0.name,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categories c1_0 
+    order by
+        c1_0.name
+2026-09-08T18:00:55.399+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (10:NUMERIC) <- [null]
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.is_active,
+        c1_0.created_at,
+        c1_0.description,
+        c1_0.name,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categories c1_0 
+    order by
+        c1_0.name
+2026-09-08T18:00:55.400+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (11:JAVA_OBJECT) <- [null]
+2026-09-08T18:00:55.400+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (12:JAVA_OBJECT) <- [null]
+2026-09-08T18:00:55.401+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (13:JAVA_OBJECT) <- [null]
+2026-09-08T18:00:55.420+02:00 DEBUG 15236 --- [xChange] [nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        i1_0.item_id,
+        i1_0.id,
+        i1_0.created_at,
+        i1_0.display_order,
+        i1_0.url 
+    from
+        item_images i1_0 
+    where
+        i1_0.item_id=? 
+    order by
+        i1_0.display_order
+Hibernate: 
+    select
+        i1_0.item_id,
+        i1_0.id,
+        i1_0.created_at,
+        i1_0.display_order,
+        i1_0.url 
+    from
+        item_images i1_0 
+    where
+        i1_0.item_id=? 
+    order by
+        i1_0.display_order
+2026-09-08T18:00:55.420+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [10]
+2026-09-08T18:00:55.444+02:00 DEBUG 15236 --- [xChange] [nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        c1_0.id,
+        c1_0.is_active,
+        c1_0.created_at,
+        c1_0.description,
+        c1_0.name,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.is_active,
+        c1_0.created_at,
+        c1_0.description,
+        c1_0.name,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+2026-09-08T18:00:55.444+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [9001]
+2026-09-08T18:00:55.472+02:00 DEBUG 15236 --- [xChange] [nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        i1_0.item_id,
+        i1_0.id,
+        i1_0.created_at,
+        i1_0.display_order,
+        i1_0.url 
+    from
+        item_images i1_0 
+    where
+        i1_0.item_id=? 
+    order by
+        i1_0.display_order
+Hibernate: 
+    select
+        i1_0.item_id,
+        i1_0.id,
+        i1_0.created_at,
+        i1_0.display_order,
+        i1_0.url 
+    from
+        item_images i1_0 
+    where
+        i1_0.item_id=? 
+    order by
+        i1_0.display_order
+2026-09-08T18:00:55.472+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [9]
+2026-09-08T18:00:55.505+02:00 DEBUG 15236 --- [xChange] [nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        c1_0.id,
+        c1_0.is_active,
+        c1_0.created_at,
+        c1_0.description,
+        c1_0.name,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.is_active,
+        c1_0.created_at,
+        c1_0.description,
+        c1_0.name,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+2026-09-08T18:00:55.505+02:00 TRACE 15236 --- [xChange] [nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [9]
+
+> Task :bootRun FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':bootRun' (registered by plugin 'org.springframework.boot').
+> Process 'command 'C:\Program Files\Java\jdk-26.0.1\bin\java.exe'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 3m 6s
+4 actionable tasks: 2 executed, 2 up-to-date

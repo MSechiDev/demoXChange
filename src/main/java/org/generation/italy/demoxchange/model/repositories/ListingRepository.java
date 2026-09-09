@@ -12,8 +12,9 @@ import java.util.List;
 
 public interface ListingRepository extends JpaRepository<Listing, Long> {
     @Query("""
-    SELECT l FROM Listing l
+    SELECT DISTINCT l FROM Listing l
     JOIN l.item i
+    LEFT JOIN FETCH l.acceptedCategories
     WHERE l.status = 'attivo'
       AND (CAST(:keyword AS string) IS NULL OR LOWER(i.title) LIKE LOWER(CONCAT('%', CAST(:keyword AS string), '%')))
       AND (:categoryId IS NULL OR i.category.id = :categoryId)

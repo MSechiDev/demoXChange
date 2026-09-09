@@ -2,6 +2,7 @@ package org.generation.italy.demoxchange.model.dto;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.List;
 
 public record ListingSearchDto(
         Long id,
@@ -14,5 +15,7 @@ public record ListingSearchDto(
         BigDecimal itemEstimatedValue,
         Long categoryId,
         String categoryName,
+        List<Long> acceptedCategoryIds,
+        List<String> acceptedCategoryNames,
         String primaryImageUrl
 ) {}

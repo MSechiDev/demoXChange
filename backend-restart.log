@@ -1,0 +1,2 @@
+Error: Could not find or load main class org.generation.italy.demoxchange.DemoXChangeApplication
+Caused by: java.lang.ClassNotFoundException: org.generation.italy.demoxchange.DemoXChangeApplication

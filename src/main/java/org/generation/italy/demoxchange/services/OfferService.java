@@ -4,6 +4,7 @@ import org.generation.italy.demoxchange.model.dto.ItemSummaryDto;
 import org.generation.italy.demoxchange.model.dto.OfferDto;
 import org.generation.italy.demoxchange.model.entities.*;
 import org.generation.italy.demoxchange.model.exceptions.BadRequestException;
+import org.generation.italy.demoxchange.model.exceptions.ConflictException;
 import org.generation.italy.demoxchange.model.exceptions.ForbiddenException;
 import org.generation.italy.demoxchange.model.exceptions.NotFoundException;
 import org.generation.italy.demoxchange.model.repositories.*;
@@ -39,6 +40,15 @@ public class OfferService {
         if (listing.getStatus() != ListingStatus.attivo) {
             throw new BadRequestException("listing_not_available",
                     "You can only make an offer on listings that are 'attivo'.");
+        }
+
+        boolean hasPendingOffer = offerRepository.findByListingIdAndStatus(listingId, OfferStatus.in_attesa)
+                .stream()
+                .anyMatch(o -> o.getOfferer().getId().equals(userId));
+
+        if (hasPendingOffer) {
+            throw new ConflictException("offer_already_pending",
+                    "You already have a pending offer on this listing.");
         }
 
         AppUser offerer = appUserRepository.findById(userId)
@@ -188,6 +198,7 @@ public class OfferService {
         }
 
         offer.setStatus(OfferStatus.rifiutata);
+        offer.setRespondedAt(OffsetDateTime.now());
 
         return toDto(offer);
     }
@@ -206,6 +217,7 @@ public class OfferService {
         }
 
         offer.setStatus(OfferStatus.annullata);
+        offer.setRespondedAt(OffsetDateTime.now());
 
         return toDto(offer);
     }

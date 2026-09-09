@@ -63,6 +63,9 @@ public class ListingSearchService {
     }
 
     private static ListingSearchDto toDto(Listing listing) {
+        List<Category> sortedAcceptedCategories = listing.getAcceptedCategories().stream()
+                .sorted(java.util.Comparator.comparing(Category::getId))
+                .toList();
         return new ListingSearchDto(
                 listing.getId(),
                 listing.getCity(),
@@ -76,6 +79,8 @@ public class ListingSearchService {
                         ? listing.getItem().getCategory().getId() : null,
                 (listing.getItem() != null && listing.getItem().getCategory() != null)
                         ? listing.getItem().getCategory().getName() : null,
+                sortedAcceptedCategories.stream().map(Category::getId).toList(),
+                sortedAcceptedCategories.stream().map(Category::getName).toList(),
                 (listing.getItem() != null && !listing.getItem().getImages().isEmpty())
                         ? listing.getItem().getImages().get(0).getUrl() : null
         );
