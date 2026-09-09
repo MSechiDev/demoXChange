@@ -8,6 +8,8 @@ import org.generation.italy.demoxchange.model.dto.UserDto;
 import org.generation.italy.demoxchange.services.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -35,5 +37,10 @@ public class AuthController {
   //  @PreAuthorize("hasRole('ADMIN')")
     public UserDto createUser(@Valid @RequestBody CreateUserRequest request) {
         return authService.createUser(request);
+    }
+
+    @GetMapping("/me")
+    public UserDto me(@AuthenticationPrincipal Jwt jwt) {
+        return authService.getCurrentUser(jwt.getClaim("uid"));
     }
 }

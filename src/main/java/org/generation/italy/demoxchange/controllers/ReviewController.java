@@ -1,10 +1,10 @@
 package org.generation.italy.demoxchange.controllers;
 
 import jakarta.validation.Valid;
-import org.generation.italy.demoxchange.model.dto.CreateReviewDto;
+import org.generation.italy.demoxchange.model.dto.CreateReviewRequest;
 import org.generation.italy.demoxchange.model.dto.ReviewSummaryDto;
 import org.generation.italy.demoxchange.services.ReviewService;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -20,13 +20,15 @@ public class ReviewController {
     }
 
     @PostMapping
-    public ResponseEntity<ReviewSummaryDto> createReview(
-            @Valid @RequestBody CreateReviewDto dto,
+    @ResponseStatus(HttpStatus.CREATED)
+    public ReviewSummaryDto createReview(
+            @Valid @RequestBody CreateReviewRequest request,
             @AuthenticationPrincipal Jwt jwt
     ) {
-        // Jwt legge il campo 'sub' (subject) che contiene lo username dell'utente loggato
-        String username = jwt.getSubject();
-        ReviewSummaryDto response = reviewService.createReview(dto, username);
-        return ResponseEntity.ok(response);
+        return reviewService.createReview(request, currentUserId(jwt));
+    }
+
+    private static long currentUserId(Jwt jwt) {
+        return jwt.getClaim("uid");
     }
 }

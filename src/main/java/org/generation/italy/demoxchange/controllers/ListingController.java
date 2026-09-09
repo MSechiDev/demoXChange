@@ -73,7 +73,7 @@ public class ListingController {
     @PostMapping("/{listingId}/offers")
     @ResponseStatus(HttpStatus.CREATED)
     public OfferDto makeOffer(@PathVariable Long listingId,
-                              @RequestBody MakeOfferRequest request,
+                              @Valid @RequestBody MakeOfferRequest request,
                               @AuthenticationPrincipal Jwt jwt) {
         return offerService.makeOffer(listingId, request.itemIds(), request.message(), extractUserId(jwt));
     }

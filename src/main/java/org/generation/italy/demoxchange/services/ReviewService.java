@@ -1,6 +1,6 @@
 package org.generation.italy.demoxchange.services;
 
-import org.generation.italy.demoxchange.model.dto.CreateReviewDto;
+import org.generation.italy.demoxchange.model.dto.CreateReviewRequest;
 import org.generation.italy.demoxchange.model.dto.ReviewSummaryDto;
 import org.generation.italy.demoxchange.model.entities.AppUser;
 import org.generation.italy.demoxchange.model.entities.Exchange;
@@ -32,10 +32,10 @@ public class ReviewService {
     }
 
     @Transactional
-    public ReviewSummaryDto createReview(CreateReviewDto dto, String currentUsername) {
+    public ReviewSummaryDto createReview(CreateReviewRequest dto, long authorId) {
 
-        // 1. Recupera l'autore dal SecurityContext (username da JWT)
-        AppUser author = appUserRepository.findByUsername(currentUsername)
+        // 1. Recupera l'autore dal SecurityContext (uid da JWT)
+        AppUser author = appUserRepository.findById(authorId)
                 .orElseThrow(() -> new NotFoundException("user_not_found", "Utente non trovato"));
 
         // 2. Recupera lo scambio

@@ -10,5 +10,7 @@ public record OfferDto(
     String offererName,
     List<ItemSummaryDto> offeredItems,
     String message,
-    OfferStatus status
+    OfferStatus status,
+    Long createdById,
+    Long parentOfferId
 ) {}

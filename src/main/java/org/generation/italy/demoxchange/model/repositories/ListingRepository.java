@@ -33,5 +33,5 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
     List<Listing> findByItemOwner(AppUser owner);
     List<Listing> findByStatus(ListingStatus status);
     List<Listing> findByAcceptedCategoriesSlug(String slug);
-    boolean existsByItemId(Long itemId);
+    boolean existsByItemIdAndStatusNot(Long itemId, ListingStatus status);
 }

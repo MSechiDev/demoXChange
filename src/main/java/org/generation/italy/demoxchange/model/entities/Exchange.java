@@ -32,6 +32,10 @@ public class Exchange {
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
 
+    @Version
+    @Column(nullable = false)
+    private long version;
+
     public Exchange() {}
 
     @PrePersist

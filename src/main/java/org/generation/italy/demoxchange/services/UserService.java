@@ -30,10 +30,7 @@ public class UserService {
 
         Double averageRating = reviews.isEmpty()
                 ? null
-                : reviews.stream()
-                .mapToInt(Review::getRating)
-                .average()
-                .orElse(0.0);
+                : reviews.stream().mapToInt(Review::getRating).average().getAsDouble();
 
         List<ReviewSummaryDto> reviewDtos = reviews.stream()
                 .map(UserService::toReviewSummaryDto)

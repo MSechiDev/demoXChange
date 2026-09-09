@@ -47,7 +47,7 @@ public class ListingService {
         if (!item.getOwner().getId().equals(owner.getId())) {
             throw new NotFoundException("ITEM_NOT_FOUND", "Item not found");
         }
-        if (listingRepository.existsByItemId(item.getId())) {
+        if (listingRepository.existsByItemIdAndStatusNot(item.getId(), ListingStatus.eliminato)) {
             throw new ConflictException("LISTING_ALREADY_EXISTS", "This item is already listed");
         }
 

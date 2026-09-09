@@ -7,6 +7,7 @@ import org.generation.italy.demoxchange.model.exceptions.ConflictException;
 import org.generation.italy.demoxchange.model.exceptions.ForbiddenException;
 import org.generation.italy.demoxchange.model.exceptions.NotFoundException;
 import org.generation.italy.demoxchange.model.repositories.ExchangeRepository;
+import org.generation.italy.demoxchange.model.repositories.ReviewRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,6 +28,9 @@ class ExchangeServiceTest {
 
     @Mock
     private ExchangeRepository exchangeRepository;
+
+    @Mock
+    private ReviewRepository reviewRepository;
 
     @InjectMocks
     private ExchangeService exchangeService;
@@ -75,6 +79,11 @@ class ExchangeServiceTest {
 
     @Test
     void confirm_bothPartiesConfirm_completesExchange() {
+        Category otherCategory = new Category("Sport", "sport", null);
+        Item offeredItem = new Item(exchange.getOffer().getOfferer(), otherCategory, "Racchetta", "descrizione", ItemCondition.buone);
+        ReflectionTestUtils.setField(offeredItem, "id", 8L);
+        exchange.getOffer().getItems().add(offeredItem);
+
         when(exchangeRepository.findById(1L)).thenReturn(Optional.of(exchange));
 
         exchangeService.confirm(1L, OWNER_ID);
@@ -85,6 +94,8 @@ class ExchangeServiceTest {
         assertThat(result.offererConfirmedAt()).isNotNull();
         assertThat(result.completedAt()).isNotNull();
         assertThat(listing.getStatus()).isEqualTo(ListingStatus.scambiato);
+        assertThat(listing.getItem().isArchived()).isTrue();
+        assertThat(offeredItem.isArchived()).isTrue();
     }
 
     @Test
@@ -124,12 +135,14 @@ class ExchangeServiceTest {
 
     @Test
     void cancel_participant_setsAnnullatoStatusAndReactivatesListing() {
+        exchange.getOffer().setStatus(OfferStatus.accettata);
         when(exchangeRepository.findById(1L)).thenReturn(Optional.of(exchange));
 
         ExchangeDto result = exchangeService.cancel(1L, OWNER_ID);
 
         assertThat(result.status()).isEqualTo(ExchangeStatus.annullato);
         assertThat(listing.getStatus()).isEqualTo(ListingStatus.attivo);
+        assertThat(exchange.getOffer().getStatus()).isEqualTo(OfferStatus.annullata);
     }
 
     @Test
@@ -162,5 +175,15 @@ class ExchangeServiceTest {
         when(exchangeRepository.findById(1L)).thenReturn(Optional.of(exchange));
 
         assertThat(exchangeService.isParticipant(1L, OUTSIDER_ID)).isFalse();
+    }
+
+    @Test
+    void findById_reflectsWhetherViewerAlreadyReviewed() {
+        when(exchangeRepository.findById(1L)).thenReturn(Optional.of(exchange));
+        when(reviewRepository.existsByExchangeIdAndAuthorId(1L, OWNER_ID)).thenReturn(true);
+        when(reviewRepository.existsByExchangeIdAndAuthorId(1L, OFFERER_ID)).thenReturn(false);
+
+        assertThat(exchangeService.findById(1L, OWNER_ID).reviewedByMe()).isTrue();
+        assertThat(exchangeService.findById(1L, OFFERER_ID).reviewedByMe()).isFalse();
     }
 }

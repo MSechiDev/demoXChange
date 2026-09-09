@@ -17,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -53,6 +52,19 @@ public class AuthService {
         return new LoginResponse(token, user.getRoles().stream().map(Enum::name).toList());
     }
 
+    @Transactional(readOnly = true)
+    public UserDto getCurrentUser(long userId) {
+        AppUser user = appUserRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("user_not_found", "User not found: " + userId));
+        return new UserDto(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.isEnabled(),
+                user.getRoles().stream().map(Enum::name).collect(Collectors.toSet())
+        );
+    }
+
     @Transactional
     public UserDto createUser(CreateUserRequest request) {
         if (request.username() == null || request.username().isBlank()) {
@@ -68,17 +80,15 @@ public class AuthService {
             throw new ConflictException("email_unavailable", "Email already exists: " + request.email());
         }
 
-        Set<UserRole> roles = parseRoles(request.roles());
-        if (roles.isEmpty()) {
-            throw new BadRequestException("invalid_request", "At least one role is required");
-        }
-
         AppUser user = new AppUser();
         user.setUsername(request.username());
         user.setEmail(request.email());
         user.setPasswordHash(passwordEncoder.encode(request.password()));
         user.setEnabled(true);
-        user.setRoles(roles);
+        // Public self-registration can only ever create USER accounts. ADMIN accounts are
+        // provisioned exclusively via DefaultAdminUserInitializer at startup; any role the
+        // caller sends here is ignored so an unauthenticated request can't grant itself ADMIN.
+        user.setRoles(Set.of(UserRole.USER));
 
         AppUser saved = appUserRepository.save(user);
         return new UserDto(
@@ -88,24 +98,5 @@ public class AuthService {
                 saved.isEnabled(),
                 saved.getRoles().stream().map(Enum::name).collect(Collectors.toSet())
         );
-    }
-
-    private static Set<UserRole> parseRoles(Set<String> roles) {
-        if (roles == null) {
-            return Set.of();
-        }
-        return roles.stream()
-                .filter(r -> r != null && !r.isBlank())
-                .map(r -> r.trim().toUpperCase(Locale.ROOT))
-                .map(AuthService::parseRole)
-                .collect(Collectors.toSet());
-    }
-
-    private static UserRole parseRole(String role) {
-        try {
-            return UserRole.valueOf(role);
-        } catch (IllegalArgumentException ex) {
-            throw new BadRequestException("invalid_role", "Role must be GUEST, USER, or ADMIN");
-        }
     }
 }

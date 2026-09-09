@@ -14,5 +14,6 @@ public record ExchangeDto(
         OffsetDateTime ownerConfirmedAt,
         OffsetDateTime offererConfirmedAt,
         OffsetDateTime completedAt,
-        OffsetDateTime createdAt
+        OffsetDateTime createdAt,
+        boolean reviewedByMe
 ) {}

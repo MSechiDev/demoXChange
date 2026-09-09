@@ -73,7 +73,7 @@ public class ReportService {
         AppUser reporter = appUserRepository.findById(reporterId)
                 .orElseThrow(() -> new NotFoundException("user_not_found", "User not found: " + reporterId));
 
-        Report report = new Report(reporter, ReportReason.valueOf(request.reason()));
+        Report report = new Report(reporter, parseReason(request.reason()));
         report.setDescription(request.description());
 
         if (hasUserTarget) {
@@ -109,13 +109,29 @@ public class ReportService {
         AppUser admin = appUserRepository.findById(adminUserId)
                 .orElseThrow(() -> new NotFoundException("user_not_found", "User not found: " + adminUserId));
 
-        report.setStatus(ReportStatus.valueOf(request.status()));
+        report.setStatus(parseStatus(request.status()));
         report.setResolutionNote(request.resolutionNote());
         report.setReviewedBy(admin);
         report.setReviewedAt(OffsetDateTime.now());
 
         Report flushed = reportRepository.saveAndFlush(report);
         return toDto(flushed);
+    }
+
+    private static ReportReason parseReason(String reason) {
+        try {
+            return ReportReason.valueOf(reason);
+        } catch (IllegalArgumentException ex) {
+            throw new BadRequestException("invalid_reason", "Invalid report reason: " + reason);
+        }
+    }
+
+    private static ReportStatus parseStatus(String status) {
+        try {
+            return ReportStatus.valueOf(status);
+        } catch (IllegalArgumentException ex) {
+            throw new BadRequestException("invalid_status", "Invalid report status: " + status);
+        }
     }
 
     private Report getOrThrow(long id) {

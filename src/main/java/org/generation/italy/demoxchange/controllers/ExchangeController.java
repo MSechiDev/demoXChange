@@ -25,8 +25,8 @@ public class ExchangeController {
 
     @GetMapping("/{id}")
     @PreAuthorize("@exchangeService.isParticipant(#id, authentication.principal.claims['uid'])")
-    public ExchangeDto findById(@PathVariable long id) {
-        return exchangeService.findById(id);
+    public ExchangeDto findById(@PathVariable long id, @AuthenticationPrincipal Jwt jwt) {
+        return exchangeService.findById(id, currentUserId(jwt));
     }
 
     @PatchMapping("/{id}/confirm")

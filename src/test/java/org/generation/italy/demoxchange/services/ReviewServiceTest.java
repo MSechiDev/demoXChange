@@ -1,6 +1,6 @@
 package org.generation.italy.demoxchange.services;
 
-import org.generation.italy.demoxchange.model.dto.CreateReviewDto;
+import org.generation.italy.demoxchange.model.dto.CreateReviewRequest;
 import org.generation.italy.demoxchange.model.dto.ReviewSummaryDto;
 import org.generation.italy.demoxchange.model.entities.*;
 import org.generation.italy.demoxchange.model.exceptions.BadRequestException;
@@ -60,12 +60,12 @@ class ReviewServiceTest {
     @Test
     void createReview_exchangeNotCompleted_throwsBadRequest() {
         exchange.setStatus(ExchangeStatus.in_corso);
-        when(appUserRepository.findByUsername("bob")).thenReturn(Optional.of(offerer));
+        when(appUserRepository.findById(2L)).thenReturn(Optional.of(offerer));
         when(exchangeRepository.findById(1L)).thenReturn(Optional.of(exchange));
 
-        CreateReviewDto dto = new CreateReviewDto(1L, (short) 5, "ottimo");
+        CreateReviewRequest dto = new CreateReviewRequest(1L, (short) 5, "ottimo");
 
-        assertThatThrownBy(() -> reviewService.createReview(dto, "bob"))
+        assertThatThrownBy(() -> reviewService.createReview(dto, 2L))
                 .isInstanceOf(BadRequestException.class);
     }
 
@@ -74,36 +74,36 @@ class ReviewServiceTest {
         AppUser outsider = new AppUser("carol", "hash", null);
         ReflectionTestUtils.setField(outsider, "id", 99L);
 
-        when(appUserRepository.findByUsername("carol")).thenReturn(Optional.of(outsider));
+        when(appUserRepository.findById(99L)).thenReturn(Optional.of(outsider));
         when(exchangeRepository.findById(1L)).thenReturn(Optional.of(exchange));
 
-        CreateReviewDto dto = new CreateReviewDto(1L, (short) 5, "ottimo");
+        CreateReviewRequest dto = new CreateReviewRequest(1L, (short) 5, "ottimo");
 
-        assertThatThrownBy(() -> reviewService.createReview(dto, "carol"))
+        assertThatThrownBy(() -> reviewService.createReview(dto, 99L))
                 .isInstanceOf(ForbiddenException.class);
     }
 
     @Test
     void createReview_duplicateReview_throwsConflict() {
-        when(appUserRepository.findByUsername("bob")).thenReturn(Optional.of(offerer));
+        when(appUserRepository.findById(2L)).thenReturn(Optional.of(offerer));
         when(exchangeRepository.findById(1L)).thenReturn(Optional.of(exchange));
         when(reviewRepository.existsByExchangeIdAndAuthorId(1L, 2L)).thenReturn(true);
 
-        CreateReviewDto dto = new CreateReviewDto(1L, (short) 5, "ottimo");
+        CreateReviewRequest dto = new CreateReviewRequest(1L, (short) 5, "ottimo");
 
-        assertThatThrownBy(() -> reviewService.createReview(dto, "bob"))
+        assertThatThrownBy(() -> reviewService.createReview(dto, 2L))
                 .isInstanceOf(ConflictException.class);
     }
 
     @Test
     void createReview_offererReviewsOwner_recipientIsOwner() {
-        when(appUserRepository.findByUsername("bob")).thenReturn(Optional.of(offerer));
+        when(appUserRepository.findById(2L)).thenReturn(Optional.of(offerer));
         when(exchangeRepository.findById(1L)).thenReturn(Optional.of(exchange));
         when(reviewRepository.existsByExchangeIdAndAuthorId(1L, 2L)).thenReturn(false);
         when(reviewRepository.save(any(Review.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        CreateReviewDto dto = new CreateReviewDto(1L, (short) 5, "ottimo scambio");
-        ReviewSummaryDto result = reviewService.createReview(dto, "bob");
+        CreateReviewRequest dto = new CreateReviewRequest(1L, (short) 5, "ottimo scambio");
+        ReviewSummaryDto result = reviewService.createReview(dto, 2L);
 
         assertThat(result.authorUsername()).isEqualTo("bob");
         assertThat(result.rating()).isEqualTo((short) 5);
@@ -111,13 +111,13 @@ class ReviewServiceTest {
 
     @Test
     void createReview_ownerReviewsOfferer_recipientIsOfferer() {
-        when(appUserRepository.findByUsername("alice")).thenReturn(Optional.of(owner));
+        when(appUserRepository.findById(1L)).thenReturn(Optional.of(owner));
         when(exchangeRepository.findById(1L)).thenReturn(Optional.of(exchange));
         when(reviewRepository.existsByExchangeIdAndAuthorId(1L, 1L)).thenReturn(false);
         when(reviewRepository.save(any(Review.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        CreateReviewDto dto = new CreateReviewDto(1L, (short) 4, "buono scambio");
-        ReviewSummaryDto result = reviewService.createReview(dto, "alice");
+        CreateReviewRequest dto = new CreateReviewRequest(1L, (short) 4, "buono scambio");
+        ReviewSummaryDto result = reviewService.createReview(dto, 1L);
 
         assertThat(result.authorUsername()).isEqualTo("alice");
         assertThat(result.rating()).isEqualTo((short) 4);

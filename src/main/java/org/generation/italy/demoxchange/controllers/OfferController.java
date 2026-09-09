@@ -1,5 +1,6 @@
 package org.generation.italy.demoxchange.controllers;
 
+import jakarta.validation.Valid;
 import org.generation.italy.demoxchange.model.dto.CounterOfferRequest;
 import org.generation.italy.demoxchange.model.dto.OfferDto;
 import org.generation.italy.demoxchange.services.OfferService;
@@ -42,7 +43,7 @@ public class OfferController {
     @ResponseStatus(HttpStatus.CREATED)
     public OfferDto counterOffer(
             @PathVariable Long offerId,
-            @RequestBody CounterOfferRequest request,
+            @Valid @RequestBody CounterOfferRequest request,
             @AuthenticationPrincipal Jwt jwt) {
 
         return offerService.counterOffer(

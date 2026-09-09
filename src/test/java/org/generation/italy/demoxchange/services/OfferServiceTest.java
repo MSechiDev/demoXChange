@@ -201,4 +201,63 @@ class OfferServiceTest {
         assertThatThrownBy(() -> offerService.counterOffer(3L, List.of(5L), "msg", OFFERER_ID))
                 .isInstanceOf(ForbiddenException.class);
     }
+
+    @Test
+    void makeOffer_ownerOffersOnOwnListing_throwsBadRequest() {
+        when(listingRepository.findById(6L)).thenReturn(Optional.of(listing));
+
+        assertThatThrownBy(() -> offerService.makeOffer(6L, List.of(7L), "msg", OWNER_ID))
+                .isInstanceOf(BadRequestException.class);
+    }
+
+    @Test
+    void approveOffer_counterOfferCreatedByOwner_offererCanApprove() {
+        AppUser owner = listing.getItem().getOwner();
+        Offer counter = new Offer(listing, offerer, owner);
+        ReflectionTestUtils.setField(counter, "id", 8L);
+
+        when(offerRepository.findById(8L)).thenReturn(Optional.of(counter));
+        when(offerRepository.findByListingIdAndStatus(6L, OfferStatus.in_attesa)).thenReturn(List.of());
+
+        OfferDto result = offerService.approveOffer(8L, OFFERER_ID);
+
+        assertThat(result.status()).isEqualTo(OfferStatus.accettata);
+    }
+
+    @Test
+    void approveOffer_counterOfferCreatedByOwner_ownerCannotApprove() {
+        AppUser owner = listing.getItem().getOwner();
+        Offer counter = new Offer(listing, offerer, owner);
+        ReflectionTestUtils.setField(counter, "id", 8L);
+
+        when(offerRepository.findById(8L)).thenReturn(Optional.of(counter));
+
+        assertThatThrownBy(() -> offerService.approveOffer(8L, OWNER_ID))
+                .isInstanceOf(ForbiddenException.class);
+    }
+
+    @Test
+    void cancelOffer_callerIsCreator_succeeds() {
+        AppUser owner = listing.getItem().getOwner();
+        Offer counter = new Offer(listing, offerer, owner);
+        ReflectionTestUtils.setField(counter, "id", 8L);
+
+        when(offerRepository.findById(8L)).thenReturn(Optional.of(counter));
+
+        OfferDto result = offerService.cancelOffer(8L, OWNER_ID);
+
+        assertThat(result.status()).isEqualTo(OfferStatus.annullata);
+    }
+
+    @Test
+    void cancelOffer_callerNotCreator_throwsForbidden() {
+        AppUser owner = listing.getItem().getOwner();
+        Offer counter = new Offer(listing, offerer, owner);
+        ReflectionTestUtils.setField(counter, "id", 8L);
+
+        when(offerRepository.findById(8L)).thenReturn(Optional.of(counter));
+
+        assertThatThrownBy(() -> offerService.cancelOffer(8L, OFFERER_ID))
+                .isInstanceOf(ForbiddenException.class);
+    }
 }

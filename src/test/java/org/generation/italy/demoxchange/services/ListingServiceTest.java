@@ -75,7 +75,7 @@ class ListingServiceTest {
         CreateListingRequest request = new CreateListingRequest("Cagliari", List.of(10L), 5L);
         when(appUserRepository.findById(OWNER_ID)).thenReturn(Optional.of(owner));
         when(itemRepository.findById(5L)).thenReturn(Optional.of(item));
-        when(listingRepository.existsByItemId(5L)).thenReturn(true);
+        when(listingRepository.existsByItemIdAndStatusNot(5L, ListingStatus.eliminato)).thenReturn(true);
 
         assertThatThrownBy(() -> listingService.createListing(OWNER_ID, request))
                 .isInstanceOf(ConflictException.class);
@@ -86,7 +86,7 @@ class ListingServiceTest {
         CreateListingRequest request = new CreateListingRequest("Cagliari", List.of(), 5L);
         when(appUserRepository.findById(OWNER_ID)).thenReturn(Optional.of(owner));
         when(itemRepository.findById(5L)).thenReturn(Optional.of(item));
-        when(listingRepository.existsByItemId(5L)).thenReturn(false);
+        when(listingRepository.existsByItemIdAndStatusNot(5L, ListingStatus.eliminato)).thenReturn(false);
 
         assertThatThrownBy(() -> listingService.createListing(OWNER_ID, request))
                 .isInstanceOf(BadRequestException.class);
@@ -97,7 +97,7 @@ class ListingServiceTest {
         CreateListingRequest request = new CreateListingRequest("Cagliari", List.of(10L, 99L), 5L);
         when(appUserRepository.findById(OWNER_ID)).thenReturn(Optional.of(owner));
         when(itemRepository.findById(5L)).thenReturn(Optional.of(item));
-        when(listingRepository.existsByItemId(5L)).thenReturn(false);
+        when(listingRepository.existsByItemIdAndStatusNot(5L, ListingStatus.eliminato)).thenReturn(false);
         when(categoryRepository.findAllById(any())).thenReturn(List.of(category));
 
         assertThatThrownBy(() -> listingService.createListing(OWNER_ID, request))
@@ -109,7 +109,7 @@ class ListingServiceTest {
         CreateListingRequest request = new CreateListingRequest("Cagliari", List.of(10L), 5L);
         when(appUserRepository.findById(OWNER_ID)).thenReturn(Optional.of(owner));
         when(itemRepository.findById(5L)).thenReturn(Optional.of(item));
-        when(listingRepository.existsByItemId(5L)).thenReturn(false);
+        when(listingRepository.existsByItemIdAndStatusNot(5L, ListingStatus.eliminato)).thenReturn(false);
         when(categoryRepository.findAllById(any())).thenReturn(List.of(category));
         when(listingRepository.save(any(Listing.class))).thenAnswer(invocation -> invocation.getArgument(0));
 

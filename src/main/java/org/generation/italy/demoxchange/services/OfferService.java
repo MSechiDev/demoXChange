@@ -42,6 +42,10 @@ public class OfferService {
                     "You can only make an offer on listings that are 'attivo'.");
         }
 
+        if (listing.getItem().getOwner().getId().equals(userId)) {
+            throw new BadRequestException("self_offer_not_allowed", "You cannot make an offer on your own listing.");
+        }
+
         boolean hasPendingOffer = offerRepository.findByListingIdAndStatus(listingId, OfferStatus.in_attesa)
                 .stream()
                 .anyMatch(o -> o.getOfferer().getId().equals(userId));
@@ -95,8 +99,8 @@ public class OfferService {
         Offer offer = offerRepository.findById(offerId)
                                      .orElseThrow(() -> new NotFoundException("offer_not_found", "Offer not found"));
 
-        if (!offer.getListing().getItem().getOwner().getId().equals(userId)) {
-            throw new ForbiddenException("offer_not_owned", "You can only approve offers that are yours.");
+        if (!isResponder(offer, userId)) {
+            throw new ForbiddenException("offer_not_owned", "You can only approve offers addressed to you.");
         }
 
         if (offer.getStatus() != OfferStatus.in_attesa) {
@@ -159,6 +163,11 @@ public class OfferService {
 
         parentOffer.setStatus(OfferStatus.controproposta);
         parentOffer.setRespondedAt(OffsetDateTime.now());
+        // Flush the parent's status change before inserting the counter: the counter row reuses
+        // the same (listing_id, offerer_id) and defaults to in_attesa, so without this the INSERT
+        // (forced immediately by the IDENTITY generator) can race the still-pending UPDATE and trip
+        // the DB's "one pending offer per listing/offerer" constraint.
+        offerRepository.saveAndFlush(parentOffer);
 
         Offer counter = new Offer(listing, offerer, createdBy);
         counter.setMessage(message);
@@ -168,6 +177,16 @@ public class OfferService {
         Offer saved = offerRepository.save(counter);
 
         return toDto(saved);
+    }
+
+    // Offers and counter-offers alternate turns: whoever did NOT create this pending offer must respond to it.
+    private static boolean isResponder(Offer offer, Long userId) {
+        Long offererId = offer.getOfferer().getId();
+        Long createdById = offer.getCreatedBy().getId();
+        if (createdById.equals(offererId)) {
+            return offer.getListing().getItem().getOwner().getId().equals(userId);
+        }
+        return offererId.equals(userId);
     }
 
     private static void assertItemsMatchAcceptedCategories(Listing listing, List<Item> items) {
@@ -189,8 +208,8 @@ public class OfferService {
         Offer offer = offerRepository.findById(offerId)
                 .orElseThrow(() -> new NotFoundException("offer_not_found", "Offer not found"));
 
-        if (!offer.getListing().getItem().getOwner().getId().equals(userId)) {
-            throw new ForbiddenException("offer_not_owned", "You can only reject offers on your own listings.");
+        if (!isResponder(offer, userId)) {
+            throw new ForbiddenException("offer_not_owned", "You can only reject offers addressed to you.");
         }
 
         if (offer.getStatus() != OfferStatus.in_attesa) {
@@ -208,8 +227,8 @@ public class OfferService {
         Offer offer = offerRepository.findById(offerId)
                 .orElseThrow(() -> new NotFoundException("offer_not_found", "Offer not found"));
 
-        if (!offer.getOfferer().getId().equals(userId)) {
-            throw new ForbiddenException("offer_not_owned", "You can only cancel your own offers.");
+        if (!offer.getCreatedBy().getId().equals(userId)) {
+            throw new ForbiddenException("offer_not_owned", "You can only cancel offers you created.");
         }
 
         if (offer.getStatus() != OfferStatus.in_attesa) {
@@ -239,7 +258,9 @@ public class OfferService {
                 offer.getOfferer().getUsername(),
                 offeredItemsDto,
                 offer.getMessage(),
-                offer.getStatus()
+                offer.getStatus(),
+                offer.getCreatedBy().getId(),
+                offer.getParentOffer() != null ? offer.getParentOffer().getId() : null
             );
         }
 
