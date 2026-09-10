@@ -9,6 +9,7 @@ public record ListingSearchDto(
         String city,
         String status,
         OffsetDateTime publishedAt,
+        Long ownerId,
         Long itemId,
         String itemTitle,
         String itemDescription,

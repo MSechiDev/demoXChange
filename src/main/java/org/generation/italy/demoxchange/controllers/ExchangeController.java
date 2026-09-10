@@ -1,6 +1,8 @@
 package org.generation.italy.demoxchange.controllers;
 
+import jakarta.validation.Valid;
 import org.generation.italy.demoxchange.model.dto.ExchangeDto;
+import org.generation.italy.demoxchange.model.dto.UpdateExchangeLogisticsRequest;
 import org.generation.italy.demoxchange.services.ExchangeService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -39,6 +41,14 @@ public class ExchangeController {
     @PreAuthorize("@exchangeService.isParticipant(#id, authentication.principal.claims['uid'])")
     public ExchangeDto cancel(@PathVariable long id, @AuthenticationPrincipal Jwt jwt) {
         return exchangeService.cancel(id, currentUserId(jwt));
+    }
+
+    @PatchMapping("/{id}/logistics")
+    @PreAuthorize("@exchangeService.isParticipant(#id, authentication.principal.claims['uid'])")
+    public ExchangeDto updateLogistics(@PathVariable long id,
+                                        @Valid @RequestBody UpdateExchangeLogisticsRequest request,
+                                        @AuthenticationPrincipal Jwt jwt) {
+        return exchangeService.updateLogistics(id, currentUserId(jwt), request);
     }
 
     private static long currentUserId(Jwt jwt) {

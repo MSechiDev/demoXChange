@@ -1,5 +1,6 @@
 package org.generation.italy.demoxchange.model.dto;
 
+import org.generation.italy.demoxchange.model.entities.ExchangeMethod;
 import org.generation.italy.demoxchange.model.entities.ExchangeStatus;
 
 import java.time.OffsetDateTime;
@@ -15,5 +16,7 @@ public record ExchangeDto(
         OffsetDateTime offererConfirmedAt,
         OffsetDateTime completedAt,
         OffsetDateTime createdAt,
-        boolean reviewedByMe
+        boolean reviewedByMe,
+        String location,
+        ExchangeMethod method
 ) {}

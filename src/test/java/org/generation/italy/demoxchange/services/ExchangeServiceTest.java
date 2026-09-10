@@ -1,6 +1,7 @@
 package org.generation.italy.demoxchange.services;
 
 import org.generation.italy.demoxchange.model.dto.ExchangeDto;
+import org.generation.italy.demoxchange.model.dto.UpdateExchangeLogisticsRequest;
 import org.generation.italy.demoxchange.model.entities.*;
 import org.generation.italy.demoxchange.model.exceptions.BadRequestException;
 import org.generation.italy.demoxchange.model.exceptions.ConflictException;
@@ -99,6 +100,37 @@ class ExchangeServiceTest {
     }
 
     @Test
+    void confirm_exchangeFromCounterOffer_archivesItemsFromWholeChain() {
+        AppUser bidder = exchange.getOffer().getOfferer();
+        AppUser owner = listing.getItem().getOwner();
+        Offer parentOffer = exchange.getOffer();
+
+        Category otherCategory = new Category("Sport", "sport", null);
+        Item bidderItem = new Item(bidder, otherCategory, "Racchetta", "descrizione", ItemCondition.buone);
+        ReflectionTestUtils.setField(bidderItem, "id", 8L);
+        parentOffer.getItems().add(bidderItem);
+
+        Item counterItem = new Item(owner, otherCategory, "Pallone", "descrizione", ItemCondition.nuovo);
+        ReflectionTestUtils.setField(counterItem, "id", 9L);
+        Offer counterOffer = new Offer(listing, bidder, owner);
+        ReflectionTestUtils.setField(counterOffer, "id", 4L);
+        counterOffer.setParentOffer(parentOffer);
+        counterOffer.getItems().add(counterItem);
+
+        Exchange counterExchange = new Exchange(counterOffer);
+        ReflectionTestUtils.setField(counterExchange, "id", 2L);
+
+        when(exchangeRepository.findById(2L)).thenReturn(Optional.of(counterExchange));
+
+        exchangeService.confirm(2L, OWNER_ID);
+        exchangeService.confirm(2L, OFFERER_ID);
+
+        assertThat(listing.getItem().isArchived()).isTrue();
+        assertThat(bidderItem.isArchived()).isTrue();
+        assertThat(counterItem.isArchived()).isTrue();
+    }
+
+    @Test
     void confirm_sameUserTwice_throwsConflict() {
         when(exchangeRepository.findById(1L)).thenReturn(Optional.of(exchange));
 
@@ -185,5 +217,56 @@ class ExchangeServiceTest {
 
         assertThat(exchangeService.findById(1L, OWNER_ID).reviewedByMe()).isTrue();
         assertThat(exchangeService.findById(1L, OFFERER_ID).reviewedByMe()).isFalse();
+    }
+
+    @Test
+    void updateLogistics_bothFieldsNull_throwsBadRequest() {
+        UpdateExchangeLogisticsRequest request = new UpdateExchangeLogisticsRequest(null, null);
+
+        assertThatThrownBy(() -> exchangeService.updateLogistics(1L, OWNER_ID, request))
+                .isInstanceOf(BadRequestException.class);
+    }
+
+    @Test
+    void updateLogistics_exchangeNotInCorso_throwsBadRequest() {
+        exchange.setStatus(ExchangeStatus.completato);
+        when(exchangeRepository.findById(1L)).thenReturn(Optional.of(exchange));
+        UpdateExchangeLogisticsRequest request = new UpdateExchangeLogisticsRequest("Piazza Duomo", null);
+
+        assertThatThrownBy(() -> exchangeService.updateLogistics(1L, OWNER_ID, request))
+                .isInstanceOf(BadRequestException.class);
+    }
+
+    @Test
+    void updateLogistics_nonParticipant_throwsForbidden() {
+        when(exchangeRepository.findById(1L)).thenReturn(Optional.of(exchange));
+        UpdateExchangeLogisticsRequest request = new UpdateExchangeLogisticsRequest("Piazza Duomo", null);
+
+        assertThatThrownBy(() -> exchangeService.updateLogistics(1L, OUTSIDER_ID, request))
+                .isInstanceOf(ForbiddenException.class);
+    }
+
+    @Test
+    void updateLogistics_participantSetsBothFields_succeeds() {
+        when(exchangeRepository.findById(1L)).thenReturn(Optional.of(exchange));
+        UpdateExchangeLogisticsRequest request = new UpdateExchangeLogisticsRequest("Piazza Duomo", ExchangeMethod.di_persona);
+
+        ExchangeDto result = exchangeService.updateLogistics(1L, OFFERER_ID, request);
+
+        assertThat(result.location()).isEqualTo("Piazza Duomo");
+        assertThat(result.method()).isEqualTo(ExchangeMethod.di_persona);
+    }
+
+    @Test
+    void updateLogistics_partialUpdate_leavesOtherFieldUntouched() {
+        exchange.setLocation("Piazza Duomo");
+        exchange.setMethod(ExchangeMethod.di_persona);
+        when(exchangeRepository.findById(1L)).thenReturn(Optional.of(exchange));
+        UpdateExchangeLogisticsRequest request = new UpdateExchangeLogisticsRequest(null, ExchangeMethod.spedizione);
+
+        ExchangeDto result = exchangeService.updateLogistics(1L, OWNER_ID, request);
+
+        assertThat(result.location()).isEqualTo("Piazza Duomo");
+        assertThat(result.method()).isEqualTo(ExchangeMethod.spedizione);
     }
 }

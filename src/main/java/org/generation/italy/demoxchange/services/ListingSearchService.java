@@ -71,6 +71,7 @@ public class ListingSearchService {
                 listing.getCity(),
                 listing.getStatus() != null ? listing.getStatus().name() : null,
                 listing.getPublishedAt(),
+                listing.getItem() != null ? listing.getItem().getOwner().getId() : null,
                 listing.getItem() != null ? listing.getItem().getId() : null,
                 listing.getItem() != null ? listing.getItem().getTitle() : null,
                 listing.getItem() != null ? listing.getItem().getDescription() : null,

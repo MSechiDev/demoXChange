@@ -1,9 +1,12 @@
 package org.generation.italy.demoxchange.services;
 
 import org.generation.italy.demoxchange.model.dto.ExchangeDto;
+import org.generation.italy.demoxchange.model.dto.UpdateExchangeLogisticsRequest;
 import org.generation.italy.demoxchange.model.entities.Exchange;
 import org.generation.italy.demoxchange.model.entities.ExchangeStatus;
+import org.generation.italy.demoxchange.model.entities.Item;
 import org.generation.italy.demoxchange.model.entities.ListingStatus;
+import org.generation.italy.demoxchange.model.entities.Offer;
 import org.generation.italy.demoxchange.model.entities.OfferStatus;
 import org.generation.italy.demoxchange.model.exceptions.BadRequestException;
 import org.generation.italy.demoxchange.model.exceptions.ConflictException;
@@ -15,7 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ExchangeService {
@@ -77,8 +82,10 @@ public class ExchangeService {
             exchange.getOffer().getListing().setStatus(ListingStatus.scambiato);
             // Both sides of the trade are now handed over: archive them so they drop out of
             // search/offers instead of looking available while actually already exchanged.
+            // A counter-offer only carries the counterer's own items, not the original bidder's,
+            // so walk the whole parent chain to catch every item that changed hands.
             exchange.getOffer().getListing().getItem().setArchived(true);
-            exchange.getOffer().getItems().forEach(item -> item.setArchived(true));
+            collectAllOfferedItems(exchange.getOffer()).forEach(item -> item.setArchived(true));
         }
 
         return toDto(exchange, userId);
@@ -107,12 +114,49 @@ public class ExchangeService {
         return toDto(exchange, userId);
     }
 
+    @Transactional
+    public ExchangeDto updateLogistics(long id, long userId, UpdateExchangeLogisticsRequest request) {
+        if (request.location() == null && request.method() == null) {
+            throw new BadRequestException("invalid_request", "At least one of location or method is required.");
+        }
+
+        Exchange exchange = getOrThrow(id);
+
+        if (exchange.getStatus() != ExchangeStatus.in_corso) {
+            throw new BadRequestException("not_valid_status", "You can only set logistics on exchanges that are in_corso.");
+        }
+
+        long ownerId = exchange.getOffer().getListing().getItem().getOwner().getId();
+        long offererId = exchange.getOffer().getOfferer().getId();
+
+        if (userId != ownerId && userId != offererId) {
+            throw new ForbiddenException("not_participant", "You are not part of this exchange.");
+        }
+
+        if (request.location() != null) {
+            exchange.setLocation(request.location());
+        }
+        if (request.method() != null) {
+            exchange.setMethod(request.method());
+        }
+
+        return toDto(exchange, userId);
+    }
+
     @Transactional(readOnly = true)
     public boolean isParticipant(long exchangeId, long userId) {
         return exchangeRepository.findById(exchangeId)
                 .map(exchange -> userId == exchange.getOffer().getOfferer().getId()
                         || userId == exchange.getOffer().getListing().getItem().getOwner().getId())
                 .orElse(false);
+    }
+
+    private static Set<Item> collectAllOfferedItems(Offer offer) {
+        Set<Item> items = new HashSet<>();
+        for (Offer current = offer; current != null; current = current.getParentOffer()) {
+            items.addAll(current.getItems());
+        }
+        return items;
     }
 
     private Exchange getOrThrow(long id) {
@@ -132,7 +176,9 @@ public class ExchangeService {
                 exchange.getOffererConfirmedAt(),
                 exchange.getCompletedAt(),
                 exchange.getCreatedAt(),
-                reviewRepository.existsByExchangeIdAndAuthorId(exchange.getId(), viewerId)
+                reviewRepository.existsByExchangeIdAndAuthorId(exchange.getId(), viewerId),
+                exchange.getLocation(),
+                exchange.getMethod()
         );
     }
 }

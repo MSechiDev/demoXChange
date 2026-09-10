@@ -32,6 +32,13 @@ public class Exchange {
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
 
+    @Column(length = 255)
+    private String location;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private ExchangeMethod method;
+
     @Version
     @Column(nullable = false)
     private long version;
@@ -93,5 +100,21 @@ public class Exchange {
 
     public OffsetDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public ExchangeMethod getMethod() {
+        return method;
+    }
+
+    public void setMethod(ExchangeMethod method) {
+        this.method = method;
     }
 }
