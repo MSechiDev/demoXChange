@@ -2,6 +2,7 @@ package org.generation.italy.demoxchange.model.dto;
 
 import org.generation.italy.demoxchange.model.entities.ListingStatus;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -13,5 +14,10 @@ public record ListingDto(
         ListingStatus status,
         OffsetDateTime publishedAt,
         OffsetDateTime updatedAt,
-        List<Long> acceptedCategoryIds
+        List<Long> acceptedCategoryIds,
+        String itemTitle,
+        String itemDescription,
+        BigDecimal itemEstimatedValue,
+        String categoryName,
+        String primaryImageUrl
 ) {}

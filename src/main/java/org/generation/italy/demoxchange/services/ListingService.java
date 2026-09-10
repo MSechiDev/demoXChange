@@ -102,10 +102,11 @@ public class ListingService {
     }
 
     private static ListingDto toDto(Listing listing) {
+        Item item = listing.getItem();
         return new ListingDto(
                 listing.getId(),
-                listing.getItem().getId(),
-                listing.getItem().getOwner().getId(),
+                item.getId(),
+                item.getOwner().getId(),
                 listing.getCity(),
                 listing.getStatus(),
                 listing.getPublishedAt(),
@@ -113,7 +114,12 @@ public class ListingService {
                 listing.getAcceptedCategories().stream()
                         .map(Category::getId)
                         .sorted()
-                        .toList()
+                        .toList(),
+                item.getTitle(),
+                item.getDescription(),
+                item.getEstimatedValue(),
+                item.getCategory() != null ? item.getCategory().getName() : null,
+                item.getImages().isEmpty() ? null : item.getImages().get(0).getUrl()
         );
     }
 }

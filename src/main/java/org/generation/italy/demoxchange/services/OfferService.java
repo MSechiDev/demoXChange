@@ -254,6 +254,7 @@ public class OfferService {
 
         return new OfferDto(
                 offer.getId(),
+                offer.getListing().getId(),
                 offer.getOfferer().getId(),
                 offer.getOfferer().getUsername(),
                 offeredItemsDto,

@@ -6,6 +6,7 @@ import java.util.List;
 
 public record OfferDto(
     Long offerId,
+    Long listingId,
     Long offererId,
     String offererName,
     List<ItemSummaryDto> offeredItems,
