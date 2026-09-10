@@ -39,6 +39,12 @@ public class Exchange {
     @Column(length = 20)
     private ExchangeMethod method;
 
+    @Column(name = "logistics_confirmed_by_owner", nullable = false)
+    private boolean logisticsConfirmedByOwner = false;
+
+    @Column(name = "logistics_confirmed_by_offerer", nullable = false)
+    private boolean logisticsConfirmedByOfferer = false;
+
     @Version
     @Column(nullable = false)
     private long version;
@@ -116,5 +122,21 @@ public class Exchange {
 
     public void setMethod(ExchangeMethod method) {
         this.method = method;
+    }
+
+    public boolean isLogisticsConfirmedByOwner() {
+        return logisticsConfirmedByOwner;
+    }
+
+    public void setLogisticsConfirmedByOwner(boolean logisticsConfirmedByOwner) {
+        this.logisticsConfirmedByOwner = logisticsConfirmedByOwner;
+    }
+
+    public boolean isLogisticsConfirmedByOfferer() {
+        return logisticsConfirmedByOfferer;
+    }
+
+    public void setLogisticsConfirmedByOfferer(boolean logisticsConfirmedByOfferer) {
+        this.logisticsConfirmedByOfferer = logisticsConfirmedByOfferer;
     }
 }

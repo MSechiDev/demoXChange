@@ -18,5 +18,7 @@ public record ExchangeDto(
         OffsetDateTime createdAt,
         boolean reviewedByMe,
         String location,
-        ExchangeMethod method
+        ExchangeMethod method,
+        boolean logisticsConfirmedByOwner,
+        boolean logisticsConfirmedByOfferer
 ) {}

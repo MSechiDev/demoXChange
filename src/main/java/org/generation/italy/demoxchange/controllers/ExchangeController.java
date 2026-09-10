@@ -51,6 +51,12 @@ public class ExchangeController {
         return exchangeService.updateLogistics(id, currentUserId(jwt), request);
     }
 
+    @PatchMapping("/{id}/logistics/confirm")
+    @PreAuthorize("@exchangeService.isParticipant(#id, authentication.principal.claims['uid'])")
+    public ExchangeDto confirmLogistics(@PathVariable long id, @AuthenticationPrincipal Jwt jwt) {
+        return exchangeService.confirmLogistics(id, currentUserId(jwt));
+    }
+
     private static long currentUserId(Jwt jwt) {
         return jwt.getClaim("uid");
     }

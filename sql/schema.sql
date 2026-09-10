@@ -99,6 +99,8 @@ CREATE TABLE public.exchanges (
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     location character varying(255),
     method character varying(20),
+    logistics_confirmed_by_owner boolean DEFAULT false NOT NULL,
+    logistics_confirmed_by_offerer boolean DEFAULT false NOT NULL,
     version bigint DEFAULT 0 NOT NULL,
     CONSTRAINT ck_exchanges_completed CHECK ((((status)::text = 'completato'::text) = (completed_at IS NOT NULL))),
     CONSTRAINT ck_exchanges_status CHECK (((status)::text = ANY ((ARRAY['in_corso'::character varying, 'completato'::character varying, 'annullato'::character varying])::text[]))),

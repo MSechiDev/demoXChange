@@ -62,6 +62,11 @@ public class ExchangeService {
             throw new ForbiddenException("not_participant", "You are not part of this exchange.");
         }
 
+        if (exchange.getLocation() == null || exchange.getMethod() == null
+                || !exchange.isLogisticsConfirmedByOwner() || !exchange.isLogisticsConfirmedByOfferer()) {
+            throw new BadRequestException("logistics_not_confirmed", "Entrambe le parti devono prima confermare luogo e metodo di scambio.");
+        }
+
         OffsetDateTime now = OffsetDateTime.now();
 
         if (isOwner) {
@@ -140,6 +145,40 @@ public class ExchangeService {
             exchange.setMethod(request.method());
         }
 
+        exchange.setLogisticsConfirmedByOwner(false);
+        exchange.setLogisticsConfirmedByOfferer(false);
+
+        return toDto(exchange, userId);
+    }
+
+    @Transactional
+    public ExchangeDto confirmLogistics(long id, long userId) {
+        Exchange exchange = getOrThrow(id);
+
+        if (exchange.getStatus() != ExchangeStatus.in_corso) {
+            throw new BadRequestException("not_valid_status", "You can only confirm logistics on exchanges that are in_corso.");
+        }
+
+        long ownerId = exchange.getOffer().getListing().getItem().getOwner().getId();
+        long offererId = exchange.getOffer().getOfferer().getId();
+
+        boolean isOwner = userId == ownerId;
+        boolean isOfferer = userId == offererId;
+
+        if (!isOwner && !isOfferer) {
+            throw new ForbiddenException("not_participant", "You are not part of this exchange.");
+        }
+
+        if (exchange.getLocation() == null || exchange.getMethod() == null) {
+            throw new BadRequestException("logistics_not_set", "Luogo e metodo di scambio devono essere impostati prima di poterli confermare.");
+        }
+
+        if (isOwner) {
+            exchange.setLogisticsConfirmedByOwner(true);
+        } else {
+            exchange.setLogisticsConfirmedByOfferer(true);
+        }
+
         return toDto(exchange, userId);
     }
 
@@ -178,7 +217,9 @@ public class ExchangeService {
                 exchange.getCreatedAt(),
                 reviewRepository.existsByExchangeIdAndAuthorId(exchange.getId(), viewerId),
                 exchange.getLocation(),
-                exchange.getMethod()
+                exchange.getMethod(),
+                exchange.isLogisticsConfirmedByOwner(),
+                exchange.isLogisticsConfirmedByOfferer()
         );
     }
 }
